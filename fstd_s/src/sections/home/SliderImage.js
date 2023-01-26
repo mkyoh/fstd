@@ -1,4 +1,4 @@
-import A350 from "../../assets/image/A350.jpg";
+import A350 from "../../assets/image/A350-Flight-Simulator.jpg";
 import EAAschool from "../../assets/image/EAAschool.gif";
 import Simulatortraining from "../../assets/image/Simulatortraining.jpg";
 import Trainees from "../../assets/image/Trainees.jpg";

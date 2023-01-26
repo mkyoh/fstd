@@ -8,7 +8,7 @@ import {  Box,  Container, Typography, Stack } from '@mui/material';
 // components
 
 import { MotionContainer} from '../../components/animate';
-import Slider from '../home';
+import {Slider} from '../home';
 
 
 // ----------------------------------------------------------------------

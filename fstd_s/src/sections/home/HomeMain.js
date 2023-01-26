@@ -8,6 +8,7 @@ import {  Box,  Container, Typography, Stack } from '@mui/material';
 // components
 
 import { MotionContainer} from '../../components/animate';
+import Slider from '../home';
 
 
 // ----------------------------------------------------------------------
@@ -53,11 +54,12 @@ export default function HomeMain() {
 
         <Container>
           <ContentStyle>
-                  <img
+                  {/* <img
                       alt="simulator training"
                       src="/favicon/EAAschool.gif"
                       
-                    />
+                    /> */}
+                    <Slider/>
           <div >
               <Typography variant="h4" sx={{ color: 'common.green' }}>
                 Welcome To Ethiopian Aviation Academy Simulator Training School

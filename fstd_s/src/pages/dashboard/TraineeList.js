@@ -1,98 +1,192 @@
-import * as React from 'react';
-import Box from '@mui/material/Box';
-import { DataGrid } from '@mui/x-data-grid';
+import "primeicons/primeicons.css";
+import "primereact/resources/themes/lara-light-indigo/theme.css";
+import "primereact/resources/primereact.css";
+import "primeflex/primeflex.css";
+import "../../index.css";
+import ReactDOM from "react-dom";
 
-const columns = [
-  { field: 'id', headerName: 'ID', width: 90 },
-  {
-    field: 'firstName',
-    headerName: 'First name',
-    width: 150,
-    editable: true,
-  },
-  {
-    field: 'lastName',
-    headerName: 'Last name',
-    width: 150,
-    editable: true,
-  },
-  {
-    field: 'trainee_id',
-    headerName: 'Trainee Id',
-    type: 'number',
-    width: 110,
-    editable: true,
-  },
-  {
-    field: 'gender',
-    headerName: 'Gender',
-    description: 'This column has a value getter and is not sortable.',
-    sortable: false,
-    width: 160,
-    valueGetter: (params) =>
-      `${params.row.firstName || ''} ${params.row.lastName || ''}`,
-  },
-];
-// const post = async (firstName, lastName,Gender) => {
-//   // console.log(userName + "gggg"+password)
-//   const response = await axios({
-//     url: '/MasterData/api/V1.0/Trainee/Create',
-//     method:"post",
-//     // headers: {
-//     //   "Access-control-Allow-Credentials": true,
-//     // },
-//      data: {
-//       firstName,
-//       password,
-//     },
-  
+import React, { useState, useEffect, useReducer } from "react";
+import { classNames } from "primereact/utils";
+import { FilterMatchMode, FilterOperator } from "primereact/api";
+import { DataTable } from "primereact/datatable";
+import { Column } from "primereact/column";
+import { InputText } from "primereact/inputtext";
+import { Dropdown } from "primereact/dropdown";
+import { InputNumber } from "primereact/inputnumber";
+import { Button } from "primereact/button";
+import { ProgressBar } from "primereact/progressbar";
+import { Calendar } from "primereact/calendar";
+import { MultiSelect } from "primereact/multiselect";
+import { Slider } from "primereact/slider";
+import { TriStateCheckbox } from "primereact/tristatecheckbox";
+import axios from '../../../src/utils/axios';
+import { isValidToken, setSession } from '../../../src/utils/jwt';
+
+import "./DataTableDemo.css";
+import { useDispatch } from "../../redux/store";
+
+const TraineeList = () => {
+  const dispatch = useDispatch();
+  const [customers1, setCustomers1] = useState([]);
+  const [filters1, setFilters1] = useState({
+    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    firstName: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+    lastName: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+    traineeid: { value: null, matchMode: FilterMatchMode.IN },
+    gender: { value: null, matchMode: FilterMatchMode.IN },
+  });
+  const [globalFilterValue1, setGlobalFilterValue1] = useState("");
+  const [loading1, setLoading1] = useState(true);
+
+
+
+  useEffect(() => {
+    const initialize = async () => {
+      try {
+        const accessToken = window.localStorage.getItem('accessToken');
     
-//   });
-const rows = [
-  { id: 1, lastName: 'Snow', firstName: 'Jon', trainee_id: 35 },
-  { id: 2, lastName: 'Lannister', firstName: 'Cersei', trainee_id: 42 },
-  { id: 3, lastName: 'Lannister', firstName: 'Jaime', trainee_id: 45 },
-  { id: 4, lastName: 'Stark', firstName: 'Arya', trainee_id: 16 },
-  { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', trainee_id: 54 },
-  { id: 6, lastName: 'Melisandre', firstName: null, trainee_id: 150 },
-  { id: 7, lastName: 'Clifford', firstName: 'Ferrara', trainee_id: 44 },
-  { id: 8, lastName: 'Frances', firstName: 'Rossini', trainee_id: 36 },
-  { id: 9, lastName: 'Roxie', firstName: 'Harvey', trainee_id: 65 },
-  { id: 9, lastName: 'Roxie', firstName: 'Harvey', trainee_id: 65 },
-  { id: 9, lastName: 'Roxie', firstName: 'Harvey', trainee_id: 65 },
-  { id: 9, lastName: 'Roxie', firstName: 'Harvey', trainee_id: 65 },
-  { id: 9, lastName: 'Roxie', firstName: 'Harvey', trainee_id: 65 },
-  { id: 9, lastName: 'Roxie', firstName: 'Harvey', trainee_id: 65 },
-  { id: 9, lastName: 'Roxie', firstName: 'Harvey', trainee_id: 65 },
-  { id: 9, lastName: 'Roxie', firstName: 'Harvey', trainee_id: 65 },
-  { id: 9, lastName: 'Roxie', firstName: 'Harvey', trainee_id: 65 },
-  { id: 9, lastName: 'Roxie', firstName: 'Harvey', trainee_id: 65 },
-  { id: 9, lastName: 'Roxie', firstName: 'Harvey', trainee_id: 65 },
-  { id: 9, lastName: 'Roxie', firstName: 'Harvey', trainee_id: 65 },
-  { id: 9, lastName: 'Roxie', firstName: 'Harvey', trainee_id: 65 },
-  { id: 9, lastName: 'Roxie', firstName: 'Harvey', trainee_id: 65 },
-  { id: 9, lastName: 'Roxie', firstName: 'Harvey', trainee_id: 65 },
-  { id: 9, lastName: 'Roxie', firstName: 'Harvey', trainee_id: 65 },
-  { id: 9, lastName: 'Roxie', firstName: 'Harvey', trainee_id: 65 },
-  { id: 9, lastName: 'Roxie', firstName: 'Harvey', trainee_id: 65 },
-  { id: 9, lastName: 'Roxie', firstName: 'Harvey', trainee_id: 65 },
-  { id: 9, lastName: 'Roxie', firstName: 'Harvey', trainee_id: 65 },
-  { id: 9, lastName: 'Roxie', firstName: 'Harvey', trainee_id: 65 },
-  { id: 9, lastName: 'Roxie', firstName: 'Harvey', trainee_id: 65 },
-];
-
-export default function TraineeList() {
-  return (
-    <Box sx={{ height: 550, width: '100%' }}>
-      <DataGrid
-        rows={rows}
-        columns={columns}
-        pageSize={100}
-        rowsPerPageOptions={[20]}
-        checkboxSelection
-        disableSelectionOnClick
-        experimentalFeatures={{ newEditingApi: true }}
-      />
-    </Box>
-  );
+        if (accessToken && isValidToken(accessToken)) {
+          setSession(accessToken);
+    const response = await axios.get("/MasterData/api/V1.0/Trainee/GetAll");
+    const masterData= response.data;
+    console.log(masterData)
+    response && masterData ? setLoading1(false) : null
+    response && masterData.status == 1 ? setCustomers1(masterData.traineesRes) : null
+    dispatch({
+      type: 'INITIALIZE',
+      payload: {
+        isAuthenticated: true,
+        masterData,
+      },
+    });
+  } else {
+    dispatch({
+      type: 'INITIALIZE',
+      payload: {
+        isAuthenticated: false,
+        masterData: null,
+      },
+    });
+  }
+} catch (err) {
+ 
+  dispatch({
+    type: 'INITIALIZE',
+    payload: {
+      isAuthenticated: false,
+      masterData: null,
+    },
+  });
 }
+};
+
+initialize();
+}, []);
+
+
+  const statuses = [
+    "unqualified",
+    "qualified",
+    "new",
+    "negotiation",
+    "renewal",
+    "proposal"
+  ];
+
+  const onGlobalFilterChange1 = (e) => {
+    const value = e.target.value;
+    let _filters1 = { ...filters1 };
+    _filters1["global"].value = value;
+
+    setFilters1(_filters1);
+    setGlobalFilterValue1(value);
+  };
+
+  const renderHeader1 = () => {
+    return (
+      <div className="flex justify-content-between">
+        {/* <Button type="button" icon="pi pi-filter-slash" label="Clear" className="p-button-outlined" onClick={clearFilter1} /> */}
+        <span className="p-input-icon-left">
+          <i className="pi pi-search" />
+          <InputText
+            value={globalFilterValue1}
+            onChange={onGlobalFilterChange1}
+            placeholder="Keyword Search"
+          />
+        </span>
+      </div>
+    );
+  };
+
+ 
+
+
+ 
+  const header1 = renderHeader1();
+  
+  
+
+  return (
+    <div className="datatable-filter-demo">
+      <div className="card">
+        <h5>Trainee List</h5>
+        {/* <p>Filters are displayed in an overlay.</p>
+        */}
+        <DataTable
+        value={customers1}
+          paginator
+          className="p-datatable-customers"
+          showGridlines
+          rows={10}
+          dataKey="id"
+          filters={filters1}
+          filterDisplay="menu"
+          loading={loading1}
+          responsiveLayout="scroll"
+          globalFilterFields={[
+            "firstName",
+            "lastName",
+            "traineeId",
+            "gender",
+      
+          ]}
+          header={header1}
+          emptyMessage="No customers found."
+        >
+            <Column
+             field="id"
+             header="Id"
+            />
+          <Column
+            field="firstName"
+            header="First Name"
+            style={{ minWidth: "12rem" }}
+          />
+          <Column
+             field="lastName"
+             header="Last Name"
+             style={{ minWidth: "12rem" }}
+            
+          />
+          <Column
+             field="traineeId"
+             header="TraineeId"
+             style={{ minWidth: "14rem" }}
+          />
+          <Column
+             field="gender"
+             header="Gender"
+             style={{ minWidth: "14rem" }}
+          />
+        </DataTable>
+      </div>
+        </div>
+  );
+};
+
+// const rootElement = document.getElementById("root");
+// ReactDOM.render(<InstructorList />, rootElement);
+
+
+
+export default TraineeList;

@@ -1,7 +1,7 @@
-import A350 from "../../assets/A350.jpg";
-import EAAschool from "../../assets/EAAschool.gif";
-import Simulatortraining from "../../assets/Simulatortraining.jpg";
-import Trainees from "../../assets/Trainees.jpg";
+import A350 from "../../assets/image/A350.jpg";
+import EAAschool from "../../assets/image/EAAschool.gif";
+import Simulatortraining from "../../assets/image/Simulatortraining.jpg";
+import Trainees from "../../assets/image/Trainees.jpg";
 export default [
   {
     title: "First Slide",

@@ -3,10 +3,9 @@ import "primereact/resources/themes/lara-light-indigo/theme.css";
 import "primereact/resources/primereact.css";
 import "primeflex/primeflex.css";
 import "../../index.css";
-import ReactDOM from "react-dom";
-
 import React, { useState, useEffect, useRef } from "react";
 import { classNames } from "primereact/utils";
+import { Calendar } from "primereact/calendar";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Toast } from "primereact/toast";
@@ -14,7 +13,7 @@ import { Button } from "primereact/button";
 import { FileUpload } from "primereact/fileupload";
 import { Rating } from "primereact/rating";
 import { Toolbar } from "primereact/toolbar";
-import { InputTextarea } from "primereact/inputtextarea";
+// import { InputTextarea } from "primereact/inputtextarea";
 // import { RadioButton } from 'primereact/radiobutton';
 import { InputNumber } from "primereact/inputnumber";
 import { Dialog } from "primereact/dialog";
@@ -23,31 +22,38 @@ import { Dropdown } from "primereact/dropdown";
 import "./DataTableDemo.css";
 
 const Q400Simulator = () => {
-  let emptyProduct = {
+  let emptySchedule = {
     id: null,
-    name: "",
-    image: null,
-    description: "",
-    category: null,
-    price: 0,
-    quantity: 0,
-    rating: 0,
-    inventoryStatus: "INSTOCK"
+    day: "",
+    date: null,
+    simulatortime: null,
+    instructor: "",
+    trainee1: "",
+    trainee2: "",
+    trainingtype: null,
+    lesson: 0,
+    trainingremark: ""
   };
 
-  const [products, setProducts] = useState(null);
-  const [day, setDay]=useState(null);
-  const [instructorss,setInstructors]=useState(null);
-  const [addScheduleDialog, setaddScheduleDialog] = useState(false);
-  const [deleteProductDialog, setDeleteProductDialog] = useState(false);
-  const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
-  const [product, setProduct] = useState(emptyProduct);
-  const [selectedProducts, setSelectedProducts] = useState(null);
+  const [schedules, setSchedules] = useState(null);
+  const [instructor, setInstructor] = useState(null);
+  const [day, setDay] = useState(null);
+  const [date2, setDate2] = useState(null);
+  const [trainee1, setTrainee1] = useState(null);
+  const [trainee2, setTrainee2] = useState(null);
+  const [trainingtype, setTrainingType] = useState(null);
+  const [lesson, setLesson] = useState(null);
+  const [instructorss, setInstructors] = useState(null);
+  const [ScheduleDialog, setScheduleDialog] = useState(false);
+  const [deleteScheduleDialog, setDeleteScheduleDialog] = useState(false);
+  const [deleteSchedulesDialog, setDeleteSchedulesDialog] = useState(false);
+  const [schedule, setSchedule] = useState(emptySchedule);
+  const [selectedSchedules, setSelectedSchedules] = useState(null);
   const [submitted, setSubmitted] = useState(false);
   const [globalFilter, setGlobalFilter] = useState(null);
   const toast = useRef(null);
   const dt = useRef(null);
- 
+
   const instructors = [
     { name: "Australia", code: "AU" },
     { name: "Brazil", code: "BR" },
@@ -60,10 +66,44 @@ const Q400Simulator = () => {
     { name: "Spain", code: "ES" },
     { name: "United States", code: "US" }
   ];
+  const days = [
+    { name: "Monday", code: "AU" },
+    { name: "Tuesday", code: "BR" },
+    { name: "Wednesday", code: "CN" },
+    { name: "Thursday", code: "EG" },
+    { name: "Friday", code: "FR" },
+    { name: "Saturday", code: "DE" },
+    { name: "Sunday", code: "IN" }
+  ];
+  const trainees = [
+    { name: "Monday", code: "AU" },
+    { name: "Tuesday", code: "BR" },
+    { name: "Wednesday", code: "CN" },
+    { name: "Thursday", code: "EG" },
+    { name: "Friday", code: "FR" },
+    { name: "Saturday", code: "DE" },
+    { name: "Sunday", code: "IN" }
+  ];
+  const trainingtypes = [
+    { name: "Initial Type Rating", code: "AU" },
+    { name: "First Offiicer Transition", code: "BR" },
+    { name: "Capitain Transition", code: "CN" },
+    { name: "Difference (Not Avaliable)", code: "EG" },
+    { name: "Requalification", code: "FR" },
+    { name: "Recurrent", code: "DE" }
+  ];
+  const lessons = [
+    { name: "Initial Type Rating", code: "AU" },
+    { name: "First Offiicer Transition", code: "BR" },
+    { name: "Capitain Transition", code: "CN" },
+    { name: "Difference (Not Avaliable)", code: "EG" },
+    { name: "Requalification", code: "FR" },
+    { name: "Recurrent", code: "DE" }
+  ];
 
-  useEffect(() => {
+  useEffect((
 
-    }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  ) => { }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const formatCurrency = (value) => {
     return value.toLocaleString("en-US", {
@@ -73,88 +113,109 @@ const Q400Simulator = () => {
   };
 
   const openNew = () => {
-    setProduct(emptyProduct);
+    setSchedule(emptySchedule);
     setSubmitted(false);
-    setaddScheduleDialog(true);
+    setScheduleDialog(true);
   };
 
   const hideDialog = () => {
     setSubmitted(false);
-    setaddScheduleDialog(false);
+    setScheduleDialog(false);
   };
 
-  const hideDeleteProductDialog = () => {
-    setDeleteProductDialog(false);
+  const hideDeleteScheduleDialog = () => {
+    setDeleteScheduleDialog(false);
   };
 
-  const hideDeleteProductsDialog = () => {
-    setDeleteProductsDialog(false);
+  const hideDeleteSchedulesDialog = () => {
+    setDeleteSchedulesDialog(false);
   };
 
-  const saveProduct = () => {
+  const saveSchedule = () => {
     setSubmitted(true);
 
-    if (product.name.trim()) {
-      let _products = [...products];
-      let _product = { ...product };
-      if (product.id) {
-        const index = findIndexById(product.id);
+    if (schedule.day?.name.trim()) {
+      let _schedules = { ...schedule };
+      let _schedule = { ...schedule };
+      if (schedule.id) {
+        const index = findIndexById(schedule.id);
 
-        _products[index] = _product;
+        // _schedule[index] = _schedule;
         toast.current.show({
           severity: "success",
           summary: "Successful",
-          detail: "Product Updated",
+          detail: "Schedule Updated",
           life: 3000
         });
       } else {
-        _product.id = createId();
-        _product.image = "product-placeholder.svg";
-        _products.push(_product);
+        _schedule.id = createId();
+        _schedule.image = "schedule-placeholder.svg";
+        // _schedules.push(_schedule);
         toast.current.show({
           severity: "success",
           summary: "Successful",
-          detail: "Product Created",
+          detail: "Schedule Created",
           life: 3000
         });
       }
 
-      setProducts(_products);
-      setaddScheduleDialog(false);
-      setProduct(emptyProduct);
+      // setSchedules(_schedules);
+      setScheduleDialog(false);
+      setSchedule(emptySchedule);
     }
   };
   const onInstructorChange = (e) => {
     setInstructor(e.value);
   };
+  const onDayChange = (e) => {
+    setDay(e.value);
+    setSchedule(
+      {  ...schedule,day: day.name },
 
-  const editProduct = (product) => {
-    setProduct({ ...product });
-    setaddScheduleDialog(true);
+    )
+  };
+  const onTrainee1Change = (e) => {
+    setTrainee1(e.value);
   };
 
-  const confirmDeleteProduct = (product) => {
-    setProduct(product);
-    setDeleteProductDialog(true);
+  const onTrainee2Change = (e) => {
+    setTrainee2(e.value);
   };
 
-  const deleteProduct = () => {
-    let _products = products.filter((val) => val.id !== product.id);
-    setProducts(_products);
-    setDeleteProductDialog(false);
-    setProduct(emptyProduct);
+  const onTrainingTypeChange = (e) => {
+    setTrainingType(e.value);
+  };
+  const onLessonChange = (e) => {
+    setLesson(e.value);
+  };
+
+  const editSchedule = (schedule) => {
+    setSchedule({ ...schedule });
+    setScheduleDialog(true);
+  };
+
+  const confirmDeleteSchedule = (schedule) => {
+    setSchedule(schedule);
+    setDeleteScheduleDialog(true);
+  };
+
+  const deleteSchedule = () => {
+    let _schedules = schedules.filter((val) => val.id !== schedule.id);
+    setSchedules(_schedules);
+    setDeleteScheduleDialog(false);
+    setSchedule(emptySchedule);
     toast.current.show({
       severity: "success",
       summary: "Successful",
-      detail: "Product Deleted",
+      detail: "Schedule Deleted",
       life: 3000
     });
   };
 
   const findIndexById = (id) => {
     let index = -1;
-    for (let i = 0; i < products.length; i++) {
-      if (products[i].id === id) {
+    for (let i = 0; i < schedules.length; i++) {
+      if (schedules[i].id === id) {
         index = i;
         break;
       }
@@ -191,8 +252,8 @@ const Q400Simulator = () => {
             c === "Status"
               ? "inventoryStatus"
               : c === "Reviews"
-              ? "rating"
-              : c.toLowerCase();
+                ? "rating"
+                : c.toLowerCase();
           obj[c] = d[i].replace(/['"]+/g, "");
           (c === "price" || c === "rating") && (obj[c] = parseFloat(obj[c]));
           return obj;
@@ -202,9 +263,9 @@ const Q400Simulator = () => {
         return processedData;
       });
 
-      const _products = [...products, ...importedData];
+      const _schedules = [...schedules, ...importedData];
 
-      setProducts(_products);
+      setSchedule(_schedules);
     };
 
     reader.readAsText(file, "UTF-8");
@@ -215,42 +276,42 @@ const Q400Simulator = () => {
   };
 
   const confirmDeleteSelected = () => {
-    setDeleteProductsDialog(true);
+    setDeleteSchedulesDialog(true);
   };
 
-  const deleteSelectedProducts = () => {
-    let _products = products.filter((val) => !selectedProducts.includes(val));
-    setProducts(_products);
-    setDeleteProductsDialog(false);
-    setSelectedProducts(null);
+  const deleteSelectedSchedules = () => {
+    let _schedules = schedules.filter((val) => !selectedSchedules.includes(val));
+    setSchedules(_schedules);
+    setDeleteSchedulesDialog(false);
+    setSelectedSchedules(null);
     toast.current.show({
       severity: "success",
       summary: "Successful",
-      detail: "Products Deleted",
+      detail: "schedules Deleted",
       life: 3000
     });
   };
 
   const onCategoryChange = (e) => {
-    let _product = { ...product };
-    _product["category"] = e.value;
-    setProduct(_product);
+    let _schedule = { ...schedule };
+    _schedule["category"] = e.value;
+    setSchedule(_schedule);
   };
 
   const onInputChange = (e, name) => {
     const val = (e.target && e.target.value) || "";
-    let _product = { ...product };
-    _product[`${name}`] = val;
+    let _schedule = { ...schedule };
+    _schedule[`${name}`] = val;
 
-    setProduct(_product);
+    setSchedule(_schedule);
   };
 
   const onInputNumberChange = (e, name) => {
     const val = e.value || 0;
-    let _product = { ...product };
-    _product[`${name}`] = val;
+    let _schedule = { ...schedule };
+    _schedule[`${name}`] = val;
 
-    setProduct(_product);
+    setSchedule(_schedule);
   };
 
   const leftToolbarTemplate = () => {
@@ -267,7 +328,7 @@ const Q400Simulator = () => {
           icon="pi pi-trash"
           className="p-button-danger"
           onClick={confirmDeleteSelected}
-          disabled={!selectedProducts || !selectedProducts.length}
+          disabled={!selectedSchedules || !selectedSchedules.length}
         />
       </React.Fragment>
     );
@@ -296,20 +357,6 @@ const Q400Simulator = () => {
     );
   };
 
-  const imageBodyTemplate = (rowData) => {
-    return (
-      <img
-        src={`images/product/${rowData.image}`}
-        onError={(e) =>
-          (e.target.src =
-            "https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png")
-        }
-        alt={rowData.image}
-        className="product-image"
-      />
-    );
-  };
-
   const priceBodyTemplate = (rowData) => {
     return formatCurrency(rowData.price);
   };
@@ -321,7 +368,7 @@ const Q400Simulator = () => {
   const statusBodyTemplate = (rowData) => {
     return (
       <span
-        className={`product-badge status-${rowData.inventoryStatus.toLowerCase()}`}
+        className={`schedule-badge status-${rowData.inventoryStatus.toLowerCase()}`}
       >
         {rowData.inventoryStatus}
       </span>
@@ -334,12 +381,12 @@ const Q400Simulator = () => {
         <Button
           icon="pi pi-pencil"
           className="p-button-rounded p-button-success mr-2"
-          onClick={() => editProduct(rowData)}
+          onClick={() => editSchedule(rowData)}
         />
         <Button
           icon="pi pi-trash"
           className="p-button-rounded p-button-warning"
-          onClick={() => confirmDeleteProduct(rowData)}
+          onClick={() => confirmDeleteSchedule(rowData)}
         />
       </React.Fragment>
     );
@@ -347,7 +394,7 @@ const Q400Simulator = () => {
 
   const header = (
     <div className="table-header">
-      <h5 className="mx-0 my-1">Manage Products</h5>
+      <h5 className="mx-0 my-1">Manage schedules</h5>
       <span className="p-input-icon-left">
         <i className="pi pi-search" />
         <InputText
@@ -358,7 +405,7 @@ const Q400Simulator = () => {
       </span>
     </div>
   );
-  const productDialogFooter = (
+  const scheduleDialogFooter = (
     <React.Fragment>
       <Button
         label="Cancel"
@@ -370,39 +417,39 @@ const Q400Simulator = () => {
         label="Save"
         icon="pi pi-check"
         className="p-button-text"
-        onClick={saveProduct}
+        onClick={saveSchedule}
       />
     </React.Fragment>
   );
-  const deleteProductDialogFooter = (
+  const deleteScheduleDialogFooter = (
     <React.Fragment>
       <Button
         label="No"
         icon="pi pi-times"
         className="p-button-text"
-        onClick={hideDeleteProductDialog}
+        onClick={hideDeleteScheduleDialog}
       />
       <Button
         label="Yes"
         icon="pi pi-check"
         className="p-button-text"
-        onClick={deleteProduct}
+        onClick={deleteSchedule}
       />
     </React.Fragment>
   );
-  const deleteProductsDialogFooter = (
+  const deleteSchedulesDialogFooter = (
     <React.Fragment>
       <Button
         label="No"
         icon="pi pi-times"
         className="p-button-text"
-        onClick={hideDeleteProductsDialog}
+        onClick={hideDeleteSchedulesDialog}
       />
       <Button
         label="Yes"
         icon="pi pi-check"
         className="p-button-text"
-        onClick={deleteSelectedProducts}
+        onClick={deleteSelectedSchedules}
       />
     </React.Fragment>
   );
@@ -420,14 +467,14 @@ const Q400Simulator = () => {
 
         <DataTable
           ref={dt}
-          selection={selectedProducts}
-          onSelectionChange={(e) => setSelectedProducts(e.value)}
+          selection={selectedSchedules}
+          onSelectionChange={(e) => setSelectedSchedules(e.value)}
           dataKey="id"
           paginator
           rows={10}
           rowsPerPageOptions={[5, 10, 25]}
           paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-          currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
+          currentPageReportTemplate="Showing {first} to {last} of {totalRecords} schedule"
           globalFilter={globalFilter}
           header={header}
           responsiveLayout="scroll"
@@ -438,13 +485,15 @@ const Q400Simulator = () => {
             exportable={false}
           ></Column>
           <Column
-            field="code"
+            field="id"
             header="Id"
             sortable
             style={{ minWidth: "1rem" }}
-          ></Column>
+          >
+
+          </Column>
           <Column
-            field="code"
+            field="day"
             header="Day"
             sortable
             style={{ minWidth: "8rem" }}
@@ -456,9 +505,11 @@ const Q400Simulator = () => {
             style={{ minWidth: "10rem" }}
           ></Column>
           <Column
-            field="image"
+            id="quantity"
             header="Simulator Time"
-            body={imageBodyTemplate}
+            value={schedule.quantity}
+            onValueChange={(e) => onInputNumberChange(e, "quantity")}
+            integeronly
           ></Column>
           <Column
             field="price"
@@ -510,203 +561,202 @@ const Q400Simulator = () => {
       </div>
 
       <Dialog
-        visible={addScheduleDialog}
-        style={{ width: "450px" }}
+        visible={ScheduleDialog}
+        style={{ width: "800px" }}
         header="Q400 Schedule Details"
         modal
         className="p-fluid"
-        footer={productDialogFooter}
+        footer={scheduleDialogFooter}
         onHide={hideDialog}
       >
         <div className="formgrid grid">
           <div className="field col">
             <label htmlFor="name">Day</label>
-            <InputText
+            <Dropdown
               id="day"
-              value={product.name}
-              onChange={(e) => onInputChange(e, "name")}
+              value={schedule.day}
+              options={days}
+              onChange={(e) => onInputChange(e, "day")}
+              optionLabel="name"
+              filter
+              showClear
+              filterBy="name"
+              placeholder="Select days"
               required
-              rows={1}
-              cols={2}
+            // va    lueTemplate={selectedCountryTemplate} itemTemplate={countryOptionTemplate}
             />
-            {submitted && !product.name && (
-              <small className="p-error">Name is required.</small>
+            {submitted && !schedule.day && (
+              <small className="p-error">Day is required.</small>
             )}
           </div>
 
           <div className="field col">
-            <label htmlFor="description">Date</label>
-            <InputTextarea
-              id="description"
-              value={product.description}
-              onChange={(e) => onInputChange(e, "description")}
-              required
-              rows={1}
-              cols={2}
+            <label htmlFor="basic">Date Picker</label>
+            <Calendar
+              id="basic"
+              value={date2}
+              onChange={(e) => setDate2(e.value)}
+              dateFormat="mm-dd-yy"
             />
           </div>
+          <div className="field col">
+            <label className="mb-3">Simulator Time</label>
+            <InputNumber
+              id="quantity"
+              value={schedule.quantity}
+              onValueChange={(e) => onInputNumberChange(e, "quantity")}
+            />
+            {submitted && !schedule.simulatortime && (
+              <small className="p-error">simulatortime is required.</small>
+            )}
+          </div>
         </div>
-        <div className="field">
-          <label className="mb-3">Simulator Time</label>
-          <InputNumber
-            id="price"
-            value={product.price}
-            onValueChange={(e) => onInputNumberChange(e, "price")}
-          />
-          {submitted && !product.name && (
-            <small className="p-error">Name is required.</small>
-          )}
-          {/* <div className="formgrid grid">
-                        <div className="field-radiobutton col-6">
-                            <RadioButton inputId="category1" name="category" value="Accessories" onChange={onCategoryChange} checked={product.category === 'Accessories'} />
-                            <label htmlFor="category1">Accessories</label>
-                        </div>
-                        <div className="field-radiobutton col-6">
-                            <RadioButton inputId="category2" name="category" value="Clothing" onChange={onCategoryChange} checked={product.category === 'Clothing'} />
-                            <label htmlFor="category2">Clothing</label>
-                        </div>
-                        <div className="field-radiobutton col-6">
-                            <RadioButton inputId="category3" name="category" value="Electronics" onChange={onCategoryChange} checked={product.category === 'Electronics'} />
-                            <label htmlFor="category3">Electronics</label>
-                        </div>
-                        <div className="field-radiobutton col-6">
-                            <RadioButton inputId="category4" name="category" value="Fitness" onChange={onCategoryChange} checked={product.category === 'Fitness'} />
-                            <label htmlFor="category4">Fitness</label>
-                        </div>
-                    </div> */}
-        </div>
+
 
         <div className="formgrid grid">
           <div className="field col">
             <label htmlFor="price">Instructor</label>
             <Dropdown
-              value={instructor}
+              id="instructor"
+              value={schedule.instructor}
               options={instructors}
-              onChange={onInstructorChange}
+              onChange={(e) => onInputChange(e, "instructor")}
               optionLabel="name"
               filter
               showClear
               filterBy="name"
-              placeholder="Select a Country"
-              // valueTemplate={selectedCountryTemplate} itemTemplate={countryOptionTemplate}
+              placeholder="Select instructors"
+            // va    lueTemplate={selectedCountryTemplate} itemTemplate={countryOptionTemplate}
             />
-            {submitted && !product.name && (
-              <small className="p-error">Name is required.</small>
+            {submitted && !schedule.instructor && (
+              <small className="p-error">Instructor is required.</small>
             )}
           </div>
           <div className="field col">
             <label htmlFor="quantity">Trainee 1</label>
-            <InputText
-              id="name"
-              value={product.name}
-              onChange={(e) => onInputChange(e, "name")}
-              required
-              autoFocus
-              className={classNames({
-                "p-invalid": submitted && !product.name
-              })}
+            <Dropdown
+            id="trainee1"
+              value={schedule.trainee1}
+              options={trainees}
+              onChange={(e) => onInputChange(e, "trainee1")}
+              optionLabel="name"
+              filter
+              showClear
+              filterBy="name"
+              placeholder="Select Trainee1"
+            // va    lueTemplate={selectedCountryTemplate} itemTemplate={countryOptionTemplate}
             />
-            {submitted && !product.name && (
-              <small className="p-error">Name is required.</small>
+            {submitted && !schedule.trainee1 && (
+              <small className="p-error">Trainee1 is required.</small>
             )}
           </div>
           <div className="field col">
             <label htmlFor="quantity">Trainee 2</label>
-            <InputText
-              id="name"
-              value={product.name}
-              onChange={(e) => onInputChange(e, "name")}
-              required
-              autoFocus
-              className={classNames({
-                "p-invalid": submitted && !product.name
-              })}
+            <Dropdown
+              value={schedule.trainee2}
+              options={trainees}
+              onChange={(e)=> onInputChange(e,"trainee2")}
+              optionLabel="name"
+              filter
+              showClear
+              filterBy="name"
+              placeholder="Select Trainee2"
+            // va    lueTemplate={selectedCountryTemplate} itemTemplate={countryOptionTemplate}
             />
-            {submitted && !product.name && (
-              <small className="p-error">Name is required.</small>
+            {submitted && !schedule.trainee2 && (
+              <small className="p-error">Trainee2 is required.</small>
             )}
           </div>
         </div>
-        <div className="field row">
-          <label htmlFor="quantity">Training Type</label>
-          <InputText
-            id="name"
-            value={product.name}
-            onChange={(e) => onInputChange(e, "name")}
-            required
-            autoFocus
-            className={classNames({ "p-invalid": submitted && !product.name })}
-          />
-          {submitted && !product.name && (
-            <small className="p-error">Name is required.</small>
-          )}
-        </div>
-        <div className="field col">
-          <label htmlFor="quantity">Lesson</label>
-          <InputText
-            id="name"
-            value={product.name}
-            onChange={(e) => onInputChange(e, "name")}
-            required
-            autoFocus
-            className={classNames({ "p-invalid": submitted && !product.name })}
-          />
-          {submitted && !product.name && (
-            <small className="p-error">Name is required.</small>
-          )}
+        <div className="formgrid grid">
+          <div className="field col">
+            <label htmlFor="quantity">Training Type</label>
+            <Dropdown
+              value={schedule.trainingtype}
+              options={trainingtypes}
+              onChange={(e)=>onInputChange(e,"trainingtype")}
+              optionLabel="name"
+              filter
+              showClear
+              filterBy="name"
+              placeholder="Select Training Type"
+            // va    lueTemplate={selectedCountryTemplate} itemTemplate={countryOptionTemplate}
+            />
+            {submitted && !schedule.trainingtype && (
+              <small className="p-error">Training type is required.</small>
+            )}
+
+          </div>
+          <div className="field col">
+            <label htmlFor="quantity">Lesson</label>
+            <Dropdown
+              value={schedule.lesson}
+              options={lessons}
+              onChange={(e)=>onInputChange(e,"lesson")}
+              optionLabel="name"
+              filter
+              showClear
+              filterBy="name"
+              placeholder="Select Lesson"
+            // va    lueTemplate={selectedCountryTemplate} itemTemplate={countryOptionTemplate}
+            />
+            {submitted && !schedule.lesson && (
+              <small className="p-error">Lesson is required.</small>
+            )}
+          </div>
         </div>
         <div className="field col">
           <label htmlFor="quantity">Training Remark</label>
           <InputText
             id="name"
-            value={product.name}
+            value={schedule.name}
             onChange={(e) => onInputChange(e, "name")}
             required
             autoFocus
-            className={classNames({ "p-invalid": submitted && !product.name })}
+            className={classNames({ "p-invalid": submitted && !schedule.name })}
           />
-          {submitted && !product.name && (
-            <small className="p-error">Name is required.</small>
+          {submitted && !schedule.trainingremark && (
+            <small className="p-error">training remark is required.</small>
           )}
         </div>
       </Dialog>
 
       <Dialog
-        visible={deleteProductDialog}
+        visible={deleteScheduleDialog}
         style={{ width: "450px" }}
         header="Confirm"
         modal
-        footer={deleteProductDialogFooter}
-        onHide={hideDeleteProductDialog}
+        footer={deleteScheduleDialogFooter}
+        onHide={hideDeleteScheduleDialog}
       >
         <div className="confirmation-content">
           <i
             className="pi pi-exclamation-triangle mr-3"
             style={{ fontSize: "2rem" }}
           />
-          {product && (
+          {schedule && (
             <span>
-              Are you sure you want to delete <b>{product.name}</b>?
+              Are you sure you want to delete <b>{schedule.name}</b>?
             </span>
           )}
         </div>
       </Dialog>
 
       <Dialog
-        visible={deleteProductsDialog}
+        visible={deleteSchedulesDialog}
         style={{ width: "450px" }}
         header="Confirm"
         modal
-        footer={deleteProductsDialogFooter}
-        onHide={hideDeleteProductsDialog}
+        footer={deleteSchedulesDialogFooter}
+        onHide={hideDeleteSchedulesDialog}
       >
         <div className="confirmation-content">
           <i
             className="pi pi-exclamation-triangle mr-3"
             style={{ fontSize: "2rem" }}
           />
-          {product && (
-            <span>Are you sure you want to delete the selected products?</span>
+          {schedule && (
+            <span>Are you sure you want to delete the selected schedules?</span>
           )}
         </div>
       </Dialog>

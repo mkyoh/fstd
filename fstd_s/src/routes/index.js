@@ -51,6 +51,7 @@ export default function Router() {
           { path: 'scheduler', element: <Scheduler /> },
           { path: 'traineelist', element: <TraineeList /> },
           { path: 'instructorlist', element: <InstructorList/> },
+          { path: 'q400simulator', element: <Q400Simulator/> },
           { path: 'calendar', element: <Calendar/> },
 
         ],
@@ -75,6 +76,7 @@ const VerifyCode = Loadable(lazy(() => import('../pages/auth/VerifyCode')));
 const Scheduler = Loadable(lazy(() => import('../pages/dashboard/Scheduler')));
 const TraineeList = Loadable(lazy(() => import('../pages/dashboard/TraineeList')));
 const InstructorList = Loadable(lazy(() => import('../pages/dashboard/InstructorList')));
+const Q400Simulator = Loadable(lazy(() => import('../pages/dashboard/Q400Simulator')));
 const Calendar = Loadable(lazy(() => import('../pages/dashboard/Calendar')));
 const HomePage= Loadable(lazy(() => import('../pages/Home')));
 const About = Loadable(lazy(() => import('../pages/About')));

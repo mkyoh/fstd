@@ -65,7 +65,7 @@ const navConfig = [
       { 
         title: 'Simulator Type',
         children:[
-     { title: 'Q400sim', path: PATH_DASHBOARD.scheduler},
+     { title: 'Q400 Simulator', path: PATH_DASHBOARD.q400simulator},
      { title: 'New 737max', path: PATH_DASHBOARD.scheduler },
      { title: 'New 737NG', path: PATH_DASHBOARD.scheduler},
      { title: 'New 737MPS', path: PATH_DASHBOARD.scheduler},

@@ -31,6 +31,7 @@ export const PATH_DASHBOARD = {
   scheduler: path(ROOTS_DASHBOARD, '/scheduler'),
   traineelist:path(ROOTS_DASHBOARD, '/traineelist'),
   instructorlist:path(ROOTS_DASHBOARD,'/instructorlist'),
+  q400simulator:path(ROOTS_DASHBOARD, '/q400simulator'),
   calendar: path(ROOTS_DASHBOARD, '/calendar'),
   };
 

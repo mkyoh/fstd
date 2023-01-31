@@ -23,25 +23,21 @@ const ICONS = {
 
 const navConfig = [
   
-// {
-//      subheader: 'Account management',
-//      items: [
-//        // USER
-//       {
-//            title: 'User',
-//            path: PATH_DASHBOARD.user.root,
-//            icon: ICONS.user,
-//            children: [
-//             //  // { title: 'Role', path: PATH_DASHBOARD.user.role },
-//             //  // { title: 'Privileges', path: PATH_DASHBOARD.user.privillege },
-//             //  { title: 'list', path: PATH_DASHBOARD.user.list },
-//             //  // { title: 'create', path: PATH_DASHBOARD.user.new },
-//             //  // { title: 'edit', path: PATH_DASHBOARD.user.demoEdit },
-//             //  // { title: 'account', path: PATH_DASHBOARD.user.account },
-//            ],
-//          },
-//         ],
-//       },
+{
+     subheader: 'Account management',
+     items: [
+       // USER
+      {
+           title: 'User',
+          //  path: PATH_DASHBOARD.user.root,
+           icon: ICONS.user,
+           children: [
+            { title: 'Role', path: PATH_DASHBOARD.traineelist },
+            { title: 'Privileges', path: PATH_DASHBOARD.traineelist },
+           ],
+         },
+        ],
+      },
   {
     subheader: 'Master Data', 
     icon: ICONS.dashboard,

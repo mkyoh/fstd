@@ -22,6 +22,7 @@ export const PATH_AUTH = {
 export const PATH_PAGE = {
   about: '/about-us',
   contact: '/contact-us',
+  service: '/service'
   
   
  

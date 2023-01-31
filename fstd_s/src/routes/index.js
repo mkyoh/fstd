@@ -64,6 +64,7 @@ export default function Router() {
           { element: <HomePage />, index: true },
           { path: 'about-us', element: <About /> },
           { path: 'contact-us', element: <Contact /> },
+          { path: 'service', element: <Service /> },
         //  { path: 'auth/login', element: <Login />}
         ],
       },
@@ -80,4 +81,5 @@ const Q400Simulator = Loadable(lazy(() => import('../pages/dashboard/Q400Simulat
 const Calendar = Loadable(lazy(() => import('../pages/dashboard/Calendar')));
 const HomePage= Loadable(lazy(() => import('../pages/Home')));
 const About = Loadable(lazy(() => import('../pages/About')));
+const Service = Loadable(lazy(() => import('../pages/Service')));
 const Contact = Loadable(lazy(() => import('../pages/Contact')));

@@ -103,12 +103,12 @@ export default function AccountPopover() {
         }}
       >
         <Box sx={{ my: 1.5, px: 2.5 }}>
-          {/* <Typography variant="subtitle2" noWrap>
-            {user?.displayName}
-          </Typography> */}
-          <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-            {user?.userName}
+          <Typography variant="subtitle2" noWrap>
+            {user?.displayuserName}
           </Typography>
+          {/* <Typography variant="subtitle2" noWrap> 
+            {admin?.userName}
+          </Typography> */}
         </Box>
 
         <Divider sx={{ borderStyle: 'dashed' }} />

@@ -13,8 +13,9 @@ import { Button } from "primereact/button";
 import { FileUpload } from "primereact/fileupload";
 import { Rating } from "primereact/rating";
 import { Toolbar } from "primereact/toolbar";
-import { GetAllschedules } from "../Service";
+import {  GetAllschedules } from "../Service";
 import { GetAllTrainees } from "../Service";
+import { GetAllInstructors } from "../Service";
 import { RadioButton } from 'primereact/radiobutton';
 import { InputNumber } from "primereact/inputnumber";
 import { Dialog } from "primereact/dialog";
@@ -28,8 +29,10 @@ const Q400Simulator = () => {
     id: null,
     day: "",
     date: null,
+    From:"",
+    To:"",
     simulatortime: null,
-    instructor: "",
+    instructor: null,
     trainee1: null,
     trainee2: null,
     trainingtype: null,
@@ -48,7 +51,6 @@ const Q400Simulator = () => {
   const [lesson, setLesson] = useState(null);
   const [date1, setDate1] = useState(null);
   const [date2, setDate2] = useState(null);
-  const [instructorss, setInstructors] = useState(null);
   const [ScheduleDialog, setScheduleDialog] = useState(false);
   const [deleteScheduleDialog, setDeleteScheduleDialog] = useState(false);
   const [deleteSchedulesDialog, setDeleteSchedulesDialog] = useState(false);
@@ -59,18 +61,6 @@ const Q400Simulator = () => {
   const toast = useRef(null);
   const dt = useRef(null);
 
-  const instructors = [
-    { name: "Australia", code: "AU" },
-    { name: "Brazil", code: "BR" },
-    { name: "China", code: "CN" },
-    { name: "Egypt", code: "EG" },
-    { name: "France", code: "FR" },
-    { name: "Germany", code: "DE" },
-    { name: "India", code: "IN" },
-    { name: "Japan", code: "JP" },
-    { name: "Spain", code: "ES" },
-    { name: "United States", code: "US" }
-  ];
   const days = [
     { name: "Monday", code: "MON" },
     { name: "Tuesday", code: "TUE" },
@@ -118,15 +108,24 @@ const Q400Simulator = () => {
   
 
 useEffect(() =>  { 
-  const scheduledata= GetAllschedules();
-  // setSchedule(scheduledata);
-  const traineedata=  GetAllTrainees();
-  // console.log(traineedata)
-  if(traineedata !== []){
-  setTrainee1(trainee1);
-  setTrainee2(trainee2);
+  async function fetchdata() {
+    const traineedata =  await GetAllTrainees();
+    if(traineedata.length > 0){
+      setTrainee1(traineedata);
+      setTrainee2(traineedata);
+  };
 
-}
+    const scheduledata = await GetAllschedules();
+    if(scheduledata.length > 0){
+     setSchedule(scheduledata);
+    };
+    const instructordata = await GetAllInstructors();
+    if(instructordata.length > 0){
+    setInstructor (instructordata);
+   };
+  }
+  fetchdata();
+
 
 }),[trainee1,trainee2];
   // const get = async () => {
@@ -180,7 +179,7 @@ useEffect(() =>  {
           });
         } else {
           const accessToken = window.localStorage.getItem('accessToken');globalFilter
-          console.log(schedule)
+          console.log(scheduledata)
           // let data = new FormData();
           // axios({
           //   headers:{
@@ -710,12 +709,12 @@ useEffect(() =>  {
               <Dropdown
                 id="instructor"
                 value={schedule.instructor}
-                options={instructors}
+                options={instructor}
                 onChange={(e) => onInputChange(e, "instructor")}
-                optionLabel="name"
+                optionLabel="firstName"
                 filter
                 showClear
-                filterBy="name"
+                filterBy="firstName"
                 placeholder="Select instructors"
               // va    lueTemplate={selectedCountryTemplate} itemTemplate={countryOptionTemplate}
               />
@@ -730,10 +729,10 @@ useEffect(() =>  {
                 value={schedule.trainee1}
                 options={trainee1}
                 onChange={(e) => onInputChange(e, "trainee1")}
-                optionLabel="name"
+                optionLabel="firstName"
                 filter
                 showClear
-                filterBy="name"
+                filterBy="firstName"
                 placeholder="Select Trainee1"
               // va    lueTemplate={selectedCountryTemplate} itemTemplate={countryOptionTemplate}
               />
@@ -747,10 +746,10 @@ useEffect(() =>  {
                 value={schedule.trainee2}
                 options={trainee2}
                 onChange={(e) => onInputChange(e, "trainee2")}
-                optionLabel="name"
+                optionLabel="firstName"
                 filter
                 showClear
-                filterBy="name"
+                filterBy="firstName"
                 placeholder="Select Trainee2"
               // va    lueTemplate={selectedCountryTemplate} itemTemplate={countryOptionTemplate}
               />

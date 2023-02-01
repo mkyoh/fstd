@@ -13,8 +13,9 @@ import { Button } from "primereact/button";
 import { FileUpload } from "primereact/fileupload";
 import { Rating } from "primereact/rating";
 import { Toolbar } from "primereact/toolbar";
-// import { InputTextarea } from "primereact/inputtextarea";
-// import { RadioButton } from 'primereact/radiobutton';
+import { GetAllschedules } from "../Service";
+import { GetAllTrainees } from "../Service";
+import { RadioButton } from 'primereact/radiobutton';
 import { InputNumber } from "primereact/inputnumber";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
@@ -29,8 +30,8 @@ const Q400Simulator = () => {
     date: null,
     simulatortime: null,
     instructor: "",
-    trainee1: "",
-    trainee2: "",
+    trainee1: null,
+    trainee2: null,
     trainingtype: null,
     lesson: "",
     trainingremark: ""
@@ -79,9 +80,7 @@ const Q400Simulator = () => {
     { name: "Saturday", code: "SAT" },
     { name: "Sunday", code: "SUN" }
   ];
-  // const trainees = [
-    
-  // ];
+ 
 
   const trainingtypes = [
     { name: "Initial Type Rating", code: "AU" },
@@ -116,24 +115,20 @@ const Q400Simulator = () => {
     { name: "New Q400 FTD" },
     { name: "New Q400 SIM" },
   ];
-
-useEffect( () =>  {
-  const accessToken = window.localStorage.getItem('accessToken');
-  const scheduledata = get
-  axios({
-    headers:{
-    Authorization:`Bearer ${accessToken}`},
-    url:"/Schedule/api/V1.0/Schedule/GetSchedule",
-    method:'GET',
   
-    }).then((response) => {
-      console.log("hhhh")
-      console.log(response.data)
-      response.data && response.data.scheduleRes ? setSchedule(response.data.scheduleRes) : null
-      
-    })
-    
-}),[];
+
+useEffect(() =>  { 
+  const scheduledata= GetAllschedules();
+  // setSchedule(scheduledata);
+  const traineedata=  GetAllTrainees();
+  // console.log(traineedata)
+  if(traineedata !== []){
+  setTrainee1(trainee1);
+  setTrainee2(trainee2);
+
+}
+
+}),[trainee1,trainee2];
   // const get = async () => {
   //   try {
    
@@ -733,7 +728,7 @@ useEffect( () =>  {
               <Dropdown
                 id="trainee1"
                 value={schedule.trainee1}
-                options={trainees}
+                options={trainee1}
                 onChange={(e) => onInputChange(e, "trainee1")}
                 optionLabel="name"
                 filter
@@ -750,7 +745,7 @@ useEffect( () =>  {
               <label htmlFor="quantity">Trainee 2</label>
               <Dropdown
                 value={schedule.trainee2}
-                options={trainees}
+                options={trainee2}
                 onChange={(e) => onInputChange(e, "trainee2")}
                 optionLabel="name"
                 filter

@@ -1,14 +1,16 @@
-import axios from 'axios';
+import axios from '../../src/utils/axios';
+
 // function Service () {
     // useEffect( () =>  {
 
- export function GetAllschedules ()
+ export const GetAllschedules = () =>
  {
     const accessToken = window.localStorage.getItem('accessToken');
 let value = [];
     axios({
         headers:{
-        Authorization:`Bearer ${accessToken}`},
+        Authorization:`Bearer ${accessToken}`
+    },
         url:"/Schedule/api/V1.0/Schedule/GetSchedule",
         method:'GET',
       
@@ -19,7 +21,8 @@ let value = [];
           value = response.data.scheduleRes
           : null
           
-        });
+        })
+        .catch((err) => console.log(err))
       return value;
  }
  
@@ -27,7 +30,9 @@ let value = [];
         
     const accessToken = window.localStorage.getItem('accessToken');
     let value = [];
-        axios({
+    // const response = axios.get("/MasterData/api/V1.0/Trainee/GetAll",accessToken)
+    // console.log(response)
+    axios({
             headers:{
             Authorization:`Bearer ${accessToken}`},
             url:"/MasterData/api/V1.0/Trainee/GetAll",
@@ -35,12 +40,12 @@ let value = [];
           
             }).then((response) => {
               console.log(response.data)
-              response.data && response.data.scheduleRes ? 
-              // setSchedule(response.data.scheduleRes) 
-              value = response.data.scheduleRes
+            return  response.data && response.data.traineesRes ? 
+              response.data.traineesRes
               : null
               
             });
+            // console.log(value)
           return value;
 }
    

@@ -29,9 +29,9 @@ const Q400Simulator = () => {
     id: null,
     day: "",
     date: null,
-    From:"",
-    To:"",
-    simulatortime: null,
+    from:"",
+    to:"",
+    duration:null,
     instructor: null,
     trainee1: null,
     trainee2: null,
@@ -165,12 +165,12 @@ useEffect(() =>  {
       setSubmitted(true);
        
       if (schedule.day?.name.trim()) {
-        let _schedules = { ...schedule };
-        let _schedule = { ...schedule };
+         let _schedules = { ...schedule };
+         let _schedule = { ...schedule };
         if (schedule.id) {
           const index = findIndexById(schedule.id);
 
-          // _schedule[index] = _schedule;
+           _schedule[index] = _schedule;
           toast.current.show({
             severity: "success",
             summary: "Successful",
@@ -179,15 +179,14 @@ useEffect(() =>  {
           });
         } else {
           const accessToken = window.localStorage.getItem('accessToken');globalFilter
-          console.log(scheduledata)
-          // let data = new FormData();
-          // axios({
-          //   headers:{
-          //   Authorization:`Bearer ${accessToken}`},
-          //   url:"/Schedule/api/V1.0/Schedule/Create",
-          //   method:'Post',
-          //   body:data
-          // })
+          let data = new FormData();
+          axios({
+            headers:{
+            Authorization:`Bearer ${accessToken}`},
+            url:"/Schedule/api/V1.0/Schedule/Create",
+            method:'Post',
+            body:data
+          })
           toast.current.show({
             severity: "success",
             summary: "Successful",
@@ -196,38 +195,32 @@ useEffect(() =>  {
           });
         }
 
-        // setSchedules(_schedules);
+         setSchedules(_schedules);
         setScheduleDialog(false);
         setSchedule(emptySchedule);
       }
     };
-    const onInstructorChange = (e) => {
-      setInstructor(e.value);
-    };
-    const onDayChange = (e) => {
-      setDay(e.value);
-      setSchedule(
-        { ...schedule, day: day.name },
+    // const onInstructorChange = (e) => {
+    //   setInstructor(e.value);
+    // };
+    
+    // const onTrainee1Change = (e) => {
+    //   setTrainee1(e.value);
+    // };
 
-      )
-    };
-    const onTrainee1Change = (e) => {
-      setTrainee1(e.value);
-    };
+    // const onTrainee2Change = (e) => {
+    //   setTrainee2(e.value);
+    // };
 
-    const onTrainee2Change = (e) => {
-      setTrainee2(e.value);
-    };
-
-    const onTrainingTypeChange = (e) => {
-      setTrainingType(e.value);
-    };
-    const onLessonChange = (e) => {
-      setLesson(e.value);
-    };
-    const onSimulatorTypeChange = (e) => {
-      SetSimulatorType(e.value);
-    };
+    // const onTrainingTypeChange = (e) => {
+    //   setTrainingType(e.value);
+    // };
+    // const onLessonChange = (e) => {
+    //   setLesson(e.value);
+    // };
+    // const onSimulatorTypeChange = (e) => {
+    //   SetSimulatorType(e.value);
+    // };
 
     const editSchedule = (schedule) => {
       setSchedule({ ...schedule });
@@ -332,24 +325,89 @@ useEffect(() =>  {
       });
     };
 
-    const onCategoryChange = (e) => {
+   const onDayChange = (e, day) => {
+    const val = (e.target && e.target.value) || "";
+    let _schedule = { ...schedule };
+    _schedule[`${day}`] = val;
+
+    setSchedule(_schedule);
+  };
+    const onDateChange = (e, date) => {
+    const val = (e.target && e.target.value) || "";
+    let _schedule = { ...schedule };
+    _schedule[`${date}`] = val;
+
+    setSchedule(_schedule);
+  };
+
+  
+  const onInputNumberChange = (e, duration) => {
+    const val = e.value || 0;
       let _schedule = { ...schedule };
-      _schedule["category"] = e.value;
+      _schedule[`${duration}`] = val;
+
       setSchedule(_schedule);
     };
-
-    const onInputChange = (e, name) => {
-      const val = (e.target && e.target.value) || "";
-      let _schedule = { ...schedule };
-      _schedule[`${name}`] = val;
-
-      setSchedule(_schedule);
-    };
-
-    const onInputNumberChange = (e, name) => {
+    const ondateFromChange = (e, from) => {
       const val = e.value || 0;
       let _schedule = { ...schedule };
-      _schedule[`${name}`] = val;
+      _schedule[`${from}`] = val;
+
+      setSchedule(_schedule);
+    };
+const ondateToChange = (e, to) => {
+      const val = e.value || 0;
+      let _schedule = { ...schedule };
+      _schedule[`${to}`] = val;
+
+      setSchedule(_schedule);
+    };
+      const onInstructorChange = (e, instructor) => {
+      const val = (e.target && e.target.value) || "";
+      let _schedule = { ...schedule };
+      _schedule[`${instructor}`] = val;
+
+      setSchedule(_schedule);
+    };
+      const onTrainee1Change = (e, trainee1) => {
+      const val = (e.target && e.target.value) || "";
+      let _schedule = { ...schedule };
+      _schedule[`${trainee1}`] = val;
+
+      setSchedule(_schedule);
+    };
+    const onTrainee2Change = (e, trainee2) => {
+      const val = (e.target && e.target.value) || "";
+      let _schedule = { ...schedule };
+      _schedule[`${trainee2}`] = val;
+
+      setSchedule(_schedule);
+    };
+    const onSimulatorTypeChange = (e, simulatortype) => {
+      const val = (e.target && e.target.value) || "";
+      let _schedule = { ...schedule };
+      _schedule[`${simulatortype}`] = val;
+
+      setSchedule(_schedule);
+    };
+    const onTrainingTypeChange = (e, trainingtype) => {
+      const val = (e.target && e.target.value) || "";
+      let _schedule = { ...schedule };
+      _schedule[`${trainingtype}`] = val;
+
+      setSchedule(_schedule);
+    };
+    const onLessonChange = (e, lesson) => {
+      const val = (e.target && e.target.value) || "";
+      let _schedule = { ...schedule };
+      _schedule[`${lesson}`] = val;
+
+      setSchedule(_schedule);
+    };
+    const onInputChange = (e, trainingremark) => {
+      const val = (e.target && e.target.value) || "";
+      let _schedule = { ...schedule };
+      _schedule[`${trainingremark}`] = val;
 
       setSchedule(_schedule);
     };
@@ -511,7 +569,7 @@ useEffect(() =>  {
             onSelectionChange={(e) => setSelectedSchedules(e.value)}
             dataKey="id"
             paginator
-            rows={10}
+            rows={1000}
             rowsPerPageOptions={[5, 10, 25]}
             paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
             currentPageReportTemplate="Showing {first} to {last} of {totalRecords} schedule"
@@ -524,14 +582,7 @@ useEffect(() =>  {
               headerStyle={{ width: "3rem" }}
               exportable={false}
             ></Column>
-            <Column
-              field="id"
-              header="Id"
-              sortable
-              style={{ minWidth: "1rem" }}
-            >
-
-            </Column>
+            
             <Column
               field="day"
               header="Day"
@@ -545,41 +596,41 @@ useEffect(() =>  {
               style={{ minWidth: "10rem" }}
             ></Column>
             <Column
-              id="quantity"
+              field="from"
               header="From"
-              value={schedule.quantity}
-              onValueChange={(e) => onInputNumberChange(e, "quantity")}
+               sortable
               integeronly
+               style={{ minWidth: "3rem" }}
             ></Column>
             <Column
-              id="quantity"
+              field="to"
               header="To"
-              value={schedule.quantity}
-              onValueChange={(e) => onInputNumberChange(e, "quantity")}
+               sortable
               integeronly
+               style={{ minWidth: "3rem" }}
             ></Column>
             <Column
-              id="quantity"
+              field="duration"
               header="Duration"
-              value={schedule.quantity}
-              onValueChange={(e) => onInputNumberChange(e, "quantity")}
+               sortable
               integeronly
+               style={{ minWidth: "8rem" }}
             ></Column>
             <Column
-              field="price"
+              field="instructor"
               header="Instructor"
               body={priceBodyTemplate}
               sortable
               style={{ minWidth: "8rem" }}
             ></Column>
             <Column
-              field="category"
+              field="trainee1"
               header="Trainee 1"
               sortable
               style={{ minWidth: "10rem" }}
             ></Column>
             <Column
-              field="rating"
+              field="trainee2"
               header="Trainee 2"
               body={ratingBodyTemplate}
               sortable
@@ -593,21 +644,21 @@ useEffect(() =>  {
               style={{ minWidth: "12rem" }}
             ></Column>
             <Column
-              field="inventoryStatus"
+              field="trainingtype"
               header="Training Type"
               body={statusBodyTemplate}
               sortable
               style={{ minWidth: "12rem" }}
             ></Column>
             <Column
-              field="inventoryStatus"
+              field="lesson"
               header="Lesson"
               body={statusBodyTemplate}
               sortable
               style={{ minWidth: "12rem" }}
             ></Column>
             <Column
-              field="inventoryStatus"
+              field="trainingremark"
               header="Training Remark"
               body={statusBodyTemplate}
               sortable
@@ -637,7 +688,7 @@ useEffect(() =>  {
                 id="day"
                 value={schedule.day}
                 options={days}
-                onChange={(e) => onInputChange(e, "day")}
+                onChange={(e) => onDayChange(e, "day")}
                 optionLabel="name"
                 filter
                 showClear
@@ -654,41 +705,42 @@ useEffect(() =>  {
             <div className="field col">
               <label htmlFor="basic">Date Picker</label>
               <Calendar
-                id="basic"
+                id="date"
                 value={date3}
-                onChange={(e) => setDate3(e.value)}
+                onChange={(e) => onDateChange(e, "date")}
                 dateFormat="mm-dd-yy"
                 required
               />
-              {submitted && !schedule.date3 && (
+              {submitted && !schedule.date && (
                 <small className="p-error">Date is required.</small>
               )}
             </div>
-            <div className="field col">
+           <div className="field col">
               <label >From</label>
               <Calendar
-                id="time12" value={date1}
+                id="from" 
+                value={date1}
                 onChange={(e) => setDate1(e.value)}
                 timeOnly hourFormat="12"
                
                 required
               />
-              {submitted && !schedule.simulatortime && (
+              {submitted && !schedule.date1 && (
                 <small className="p-error">Time From is required.</small>
               )}
             </div>
             <div className="field col">
               <label>To</label>
-              <Calendar id="time12" value={date2}
+              <Calendar 
+                id="to" 
+                value={date2}
                 onChange={(e) => setDate2(e.value)}
                 timeOnly hourFormat="12"
-                
                 required />
-              {submitted && !schedule.simulatortime && (
+              {submitted && !schedule.date2 && (
                 <small className="p-error">TimeTo is required.</small>
               )}
             </div>
-
           </div>
 
 
@@ -696,12 +748,12 @@ useEffect(() =>  {
             <div className="field col">
               <label className="mb-3">Duration</label>
               <InputNumber
-                id="quantity"
-                value={schedule.quantity}
-                onValueChange={(e) => onInputNumberChange(e, "quantity")}
+                id="duration"
+                value={schedule.duration}
+                onChange={(e) => onInputNumberChange(e, "duration")}
               />
-              {submitted && !schedule.simulatortime && (
-                <small className="p-error">simulatortime is required.</small>
+              {submitted && !schedule.duration && (
+                <small className="p-error">duration is required.</small>
               )}
             </div>
             <div className="field col">
@@ -710,7 +762,7 @@ useEffect(() =>  {
                 id="instructor"
                 value={schedule.instructor}
                 options={instructor}
-                onChange={(e) => onInputChange(e, "instructor")}
+                onChange={(e) => onInstructorChange(e, "instructor")}
                 optionLabel="firstName"
                 filter
                 showClear
@@ -728,7 +780,7 @@ useEffect(() =>  {
                 id="trainee1"
                 value={schedule.trainee1}
                 options={trainee1}
-                onChange={(e) => onInputChange(e, "trainee1")}
+                onChange={(e) => onTrainee1Change(e, "trainee1")}
                 optionLabel="firstName"
                 filter
                 showClear
@@ -745,7 +797,7 @@ useEffect(() =>  {
               <Dropdown
                 value={schedule.trainee2}
                 options={trainee2}
-                onChange={(e) => onInputChange(e, "trainee2")}
+                onChange={(e) => onTrainee2Change(e, "trainee2")}
                 optionLabel="firstName"
                 filter
                 showClear
@@ -762,9 +814,9 @@ useEffect(() =>  {
             <div className="field col">
               <label htmlFor="quantity">Simulator Type</label>
               <Dropdown
-                value={schedule.trainingtype}
+                value={schedule.simulatortype}
                 options={simulatortypes}
-                onChange={(e) => onInputChange(e, "simulatortype")}
+                onChange={(e) => onSimulatorTypeChange(e, "simulatortype")}
                 optionLabel="name"
                 filter
                 showClear
@@ -772,7 +824,7 @@ useEffect(() =>  {
                 placeholder="Select Simulator Type"
               // va    lueTemplate={selectedCountryTemplate} itemTemplate={countryOptionTemplate}
               />
-              {submitted && !schedule.trainingtype && (
+              {submitted && !schedule.simulatortype && (
                 <small className="p-error">Simulator type is required.</small>
               )}
 
@@ -782,7 +834,7 @@ useEffect(() =>  {
               <Dropdown
                 value={schedule.trainingtype}
                 options={trainingtypes}
-                onChange={(e) => onInputChange(e, "trainingtype")}
+                onChange={(e) => onTrainingTypeChange(e, "trainingtype")}
                 optionLabel="name"
                 filter
                 showClear
@@ -800,13 +852,13 @@ useEffect(() =>  {
               <Dropdown
                 value={schedule.lesson}
                 options={lessons}
-                onChange={(e) => onInputChange(e, "lesson")}
+                onChange={(e) => onLessonChange(e, "lesson")}
                 optionLabel="name"
                 filter
                 showClear
                 filterBy="name"
                 placeholder="Select Lesson"
-              // va    lueTemplate={selectedCountryTemplate} itemTemplate={countryOptionTemplate}
+              // valueTemplate={selectedCountryTemplate} itemTemplate={countryOptionTemplate}
               />
               {submitted && !schedule.lesson && (
                 <small className="p-error">Lesson is required.</small>
@@ -818,7 +870,7 @@ useEffect(() =>  {
             <InputText
               id="name"
               value={schedule.name}
-              onChange={(e) => onInputChange(e, "name")}
+              onChange={(e) => onInputChange(e, "trainingremark")}
               required
               autoFocus
               className={classNames({ "p-invalid": submitted && !schedule.name })}

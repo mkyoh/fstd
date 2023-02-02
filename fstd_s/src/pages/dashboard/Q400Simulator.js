@@ -3,7 +3,7 @@ import "primereact/resources/themes/lara-light-indigo/theme.css";
 import "primereact/resources/primereact.css";
 import "primeflex/primeflex.css";
 import "../../index.css";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef,useCallback } from "react";
 import { classNames } from "primereact/utils";
 import { Calendar } from "primereact/calendar";
 import { DataTable } from "primereact/datatable";
@@ -46,11 +46,7 @@ const Q400Simulator = () => {
   const [date3, setDate3] = useState(null);
   const [trainee1, setTrainee1] = useState(null);
   const [trainee2, setTrainee2] = useState(null);
-  const [simulatortype, SetSimulatorType] = useState(null);
-  const [trainingtype, setTrainingType] = useState(null);
-  const [lesson, setLesson] = useState(null);
-  const [date1, setDate1] = useState(null);
-  const [date2, setDate2] = useState(null);
+
   const [ScheduleDialog, setScheduleDialog] = useState(false);
   const [deleteScheduleDialog, setDeleteScheduleDialog] = useState(false);
   const [deleteSchedulesDialog, setDeleteSchedulesDialog] = useState(false);
@@ -106,41 +102,34 @@ const Q400Simulator = () => {
     { name: "New Q400 SIM" },
   ];
   
-
+const getSchedules = useCallback(async () => {
+  const data = await GetAllschedules();
+  setSchedules(data)
+},[])
+const getTrainees= useCallback(async () => {
+  const data = await GetAllTrainees();
+  setTrainee1(data)
+  setTrainee2(data)
+},[])
+const getInstructors= useCallback(async () => {
+  const data = await GetAllInstructors();
+  setInstructor(data)
+},[])
 useEffect(() =>  { 
-  async function fetchdata() {
-    const traineedata =  await GetAllTrainees();
-    if(traineedata.length > 0){
-      setTrainee1(traineedata);
-      setTrainee2(traineedata);
-  };
-
-    const scheduledata = await GetAllschedules();
-    if(scheduledata.length > 0){
-     setSchedule(scheduledata);
-    };
-    const instructordata = await GetAllInstructors();
-    if(instructordata.length > 0){
-    setInstructor (instructordata);
-   };
-  }
-  fetchdata();
+  getSchedules()
+  getTrainees()
+  getInstructors()
 
 
-}),[trainee1,trainee2];
-  // const get = async () => {
-  //   try {
-   
-  //   } catch (err) {
-  //     console.log(err);
-  //   } // eslint-disable-line react-hooks/exhaustive-deps
 
-    const formatCurrency = (value) => {
-      return value.toLocaleString("en-US", {
-        style: "currency",
-        currency: "USD"
-      });
-    };
+},[getSchedules,getTrainees,getInstructors]);
+  
+    // const formatCurrency = (value) => {
+    //   return value.toLocaleString("en-US", {
+    //     style: "currency",
+    //     currency: "USD"
+    //   });
+    // };
 
     const openNew = () => {
       setSchedule(emptySchedule);
@@ -178,7 +167,8 @@ useEffect(() =>  {
             life: 3000
           });
         } else {
-          const accessToken = window.localStorage.getItem('accessToken');globalFilter
+          const accessToken = window.localStorage.getItem('accessToken');
+          console.log(schedule)
           let data = new FormData();
           axios({
             headers:{
@@ -332,14 +322,14 @@ useEffect(() =>  {
 
     setSchedule(_schedule);
   };
-    const onDateChange = (e, date) => {
-    const val = (e.target && e.target.value) || "";
-    let _schedule = { ...schedule };
-    _schedule[`${date}`] = val;
 
-    setSchedule(_schedule);
-  };
+const onInputChange = (e, day) => {
+      const val = (e.target && e.target.value) || "";
+      let _schedule = { ...schedule };
+      _schedule[`${day}`] = val;
 
+      setSchedule(_schedule);
+    };
   
   const onInputNumberChange = (e, duration) => {
     const val = e.value || 0;
@@ -404,13 +394,7 @@ const ondateToChange = (e, to) => {
 
       setSchedule(_schedule);
     };
-    const onInputChange = (e, trainingremark) => {
-      const val = (e.target && e.target.value) || "";
-      let _schedule = { ...schedule };
-      _schedule[`${trainingremark}`] = val;
-
-      setSchedule(_schedule);
-    };
+   
 
     const leftToolbarTemplate = () => {
       return (
@@ -454,25 +438,6 @@ const ondateToChange = (e, to) => {
         </React.Fragment>
       );
     };
-
-    const priceBodyTemplate = (rowData) => {
-      return formatCurrency(rowData.price);
-    };
-
-    const ratingBodyTemplate = (rowData) => {
-      return <Rating value={rowData.rating} readOnly cancel={false} />;
-    };
-
-    const statusBodyTemplate = (rowData) => {
-      return (
-        <span
-          className={`schedule-badge status-${rowData.inventoryStatus.toLowerCase()}`}
-        >
-          {rowData.inventoryStatus}
-        </span>
-      );
-    };
-
     const actionBodyTemplate = (rowData) => {
       return (
         <React.Fragment>
@@ -569,7 +534,7 @@ const ondateToChange = (e, to) => {
             onSelectionChange={(e) => setSelectedSchedules(e.value)}
             dataKey="id"
             paginator
-            rows={1000}
+            rows={10}
             rowsPerPageOptions={[5, 10, 25]}
             paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
             currentPageReportTemplate="Showing {first} to {last} of {totalRecords} schedule"
@@ -582,7 +547,14 @@ const ondateToChange = (e, to) => {
               headerStyle={{ width: "3rem" }}
               exportable={false}
             ></Column>
-            
+            <Column
+              field="id"
+              header="Id"
+              sortable
+              style={{ minWidth: "1rem" }}
+            >
+
+            </Column>
             <Column
               field="day"
               header="Day"
@@ -590,27 +562,27 @@ const ondateToChange = (e, to) => {
               style={{ minWidth: "8rem" }}
             ></Column>
             <Column
-              field="name"
+              field="date"
               header="Date"
               sortable
               style={{ minWidth: "10rem" }}
             ></Column>
             <Column
-              field="from"
+              id="from"
               header="From"
                sortable
               integeronly
                style={{ minWidth: "3rem" }}
             ></Column>
             <Column
-              field="to"
+              id="to"
               header="To"
                sortable
               integeronly
                style={{ minWidth: "3rem" }}
             ></Column>
             <Column
-              field="duration"
+              id="duration"
               header="Duration"
                sortable
               integeronly
@@ -619,7 +591,6 @@ const ondateToChange = (e, to) => {
             <Column
               field="instructor"
               header="Instructor"
-              body={priceBodyTemplate}
               sortable
               style={{ minWidth: "8rem" }}
             ></Column>
@@ -632,35 +603,30 @@ const ondateToChange = (e, to) => {
             <Column
               field="trainee2"
               header="Trainee 2"
-              body={ratingBodyTemplate}
               sortable
               style={{ minWidth: "12rem" }}
             ></Column>
             <Column
               field="simulatortype"
               header="Simulator Type"
-              body={statusBodyTemplate}
               sortable
               style={{ minWidth: "12rem" }}
             ></Column>
             <Column
               field="trainingtype"
               header="Training Type"
-              body={statusBodyTemplate}
               sortable
               style={{ minWidth: "12rem" }}
             ></Column>
             <Column
               field="lesson"
               header="Lesson"
-              body={statusBodyTemplate}
               sortable
               style={{ minWidth: "12rem" }}
             ></Column>
             <Column
               field="trainingremark"
               header="Training Remark"
-              body={statusBodyTemplate}
               sortable
               style={{ minWidth: "12rem" }}
             ></Column>
@@ -688,14 +654,15 @@ const ondateToChange = (e, to) => {
                 id="day"
                 value={schedule.day}
                 options={days}
-                onChange={(e) => onDayChange(e, "day")}
+                onChange={(e) => onInputChange(e, "day")}
                 optionLabel="name"
                 filter
                 showClear
                 filterBy="name"
                 placeholder="Select days"
                 required
-              // va    lueTemplate={selectedCountryTemplate} itemTemplate={countryOptionTemplate}
+                autoFocus
+                 className={classNames({ 'p-invalid': submitted && !schedule.day })}
               />
               {submitted && !schedule.day && (
                 <small className="p-error">Day is required.</small>
@@ -706,10 +673,12 @@ const ondateToChange = (e, to) => {
               <label htmlFor="basic">Date Picker</label>
               <Calendar
                 id="date"
-                value={date3}
-                onChange={(e) => onDateChange(e, "date")}
+                value={schedule.date}
+                onChange={(e) => onInputChange(e, "date")}
                 dateFormat="mm-dd-yy"
                 required
+                autoFocus
+                className={classNames({ 'p-invalid': submitted && !schedule.date })}
               />
               {submitted && !schedule.date && (
                 <small className="p-error">Date is required.</small>
@@ -719,13 +688,14 @@ const ondateToChange = (e, to) => {
               <label >From</label>
               <Calendar
                 id="from" 
-                value={date1}
-                onChange={(e) => setDate1(e.value)}
+                value={schedule.from}
+                onChange={(e) => onInputChange(e, "from")}
                 timeOnly hourFormat="12"
-               
                 required
+                autoFocus
+                 className={classNames({ 'p-invalid': submitted && !schedule.from })}
               />
-              {submitted && !schedule.date1 && (
+              {submitted && !schedule.from && (
                 <small className="p-error">Time From is required.</small>
               )}
             </div>
@@ -733,11 +703,13 @@ const ondateToChange = (e, to) => {
               <label>To</label>
               <Calendar 
                 id="to" 
-                value={date2}
-                onChange={(e) => setDate2(e.value)}
+                value={schedule.to}
+                onChange={(e) => onInputChange(e,"to")}
                 timeOnly hourFormat="12"
-                required />
-              {submitted && !schedule.date2 && (
+                required
+                autoFocus
+                className={classNames({ 'p-invalid': submitted && !schedule.to})} />
+                {submitted && !schedule.to && (
                 <small className="p-error">TimeTo is required.</small>
               )}
             </div>
@@ -751,13 +723,16 @@ const ondateToChange = (e, to) => {
                 id="duration"
                 value={schedule.duration}
                 onChange={(e) => onInputNumberChange(e, "duration")}
+                required
+                autoFocus
+                 className={classNames({ 'p-invalid': submitted && !schedule.duration })}
               />
               {submitted && !schedule.duration && (
                 <small className="p-error">duration is required.</small>
               )}
             </div>
             <div className="field col">
-              <label htmlFor="price">Instructor</label>
+              <label htmlFor="instructor">Instructor</label>
               <Dropdown
                 id="instructor"
                 value={schedule.instructor}
@@ -768,6 +743,8 @@ const ondateToChange = (e, to) => {
                 showClear
                 filterBy="firstName"
                 placeholder="Select instructors"
+                autoFocus
+                 className={classNames({ 'p-invalid': submitted && !schedule.instructor })}
               // va    lueTemplate={selectedCountryTemplate} itemTemplate={countryOptionTemplate}
               />
               {submitted && !schedule.instructor && (
@@ -775,7 +752,7 @@ const ondateToChange = (e, to) => {
               )}
             </div>
             <div className="field col">
-              <label htmlFor="quantity">Trainee 1</label>
+              <label htmlFor="trainee1">Trainee 1</label>
               <Dropdown
                 id="trainee1"
                 value={schedule.trainee1}
@@ -786,14 +763,15 @@ const ondateToChange = (e, to) => {
                 showClear
                 filterBy="firstName"
                 placeholder="Select Trainee1"
-              // va    lueTemplate={selectedCountryTemplate} itemTemplate={countryOptionTemplate}
+              autoFocus
+                 className={classNames({ 'p-invalid': submitted && !schedule.trainee1 })}
               />
               {submitted && !schedule.trainee1 && (
                 <small className="p-error">Trainee1 is required.</small>
               )}
             </div>
             <div className="field col">
-              <label htmlFor="quantity">Trainee 2</label>
+              <label htmlFor="trainee2">Trainee 2</label>
               <Dropdown
                 value={schedule.trainee2}
                 options={trainee2}
@@ -803,7 +781,8 @@ const ondateToChange = (e, to) => {
                 showClear
                 filterBy="firstName"
                 placeholder="Select Trainee2"
-              // va    lueTemplate={selectedCountryTemplate} itemTemplate={countryOptionTemplate}
+             autoFocus
+                 className={classNames({ 'p-invalid': submitted && !schedule.trainee2})}
               />
               {submitted && !schedule.trainee2 && (
                 <small className="p-error">Trainee2 is required.</small>
@@ -812,7 +791,7 @@ const ondateToChange = (e, to) => {
           </div>
           <div className="formgrid grid">
             <div className="field col">
-              <label htmlFor="quantity">Simulator Type</label>
+              <label htmlFor="simulatortype">Simulator Type</label>
               <Dropdown
                 value={schedule.simulatortype}
                 options={simulatortypes}
@@ -822,7 +801,8 @@ const ondateToChange = (e, to) => {
                 showClear
                 filterBy="name"
                 placeholder="Select Simulator Type"
-              // va    lueTemplate={selectedCountryTemplate} itemTemplate={countryOptionTemplate}
+              autoFocus
+                 className={classNames({ 'p-invalid': submitted && !schedule.simulatortype })}
               />
               {submitted && !schedule.simulatortype && (
                 <small className="p-error">Simulator type is required.</small>
@@ -830,7 +810,7 @@ const ondateToChange = (e, to) => {
 
             </div>
             <div className="field col">
-              <label htmlFor="quantity">Training Type</label>
+              <label htmlFor="trainingtype">Training Type</label>
               <Dropdown
                 value={schedule.trainingtype}
                 options={trainingtypes}
@@ -840,7 +820,8 @@ const ondateToChange = (e, to) => {
                 showClear
                 filterBy="name"
                 placeholder="Select Training Type"
-              // va    lueTemplate={selectedCountryTemplate} itemTemplate={countryOptionTemplate}
+           autoFocus
+                 className={classNames({ 'p-invalid': submitted && !schedule.trainingtype })}
               />
               {submitted && !schedule.trainingtype && (
                 <small className="p-error">Training type is required.</small>
@@ -848,7 +829,7 @@ const ondateToChange = (e, to) => {
 
             </div>
             <div className="field col">
-              <label htmlFor="quantity">Lesson</label>
+              <label htmlFor="lesson">Lesson</label>
               <Dropdown
                 value={schedule.lesson}
                 options={lessons}
@@ -858,7 +839,8 @@ const ondateToChange = (e, to) => {
                 showClear
                 filterBy="name"
                 placeholder="Select Lesson"
-              // valueTemplate={selectedCountryTemplate} itemTemplate={countryOptionTemplate}
+              autoFocus
+                 className={classNames({ 'p-invalid': submitted && !schedule.lesson})}
               />
               {submitted && !schedule.lesson && (
                 <small className="p-error">Lesson is required.</small>
@@ -868,16 +850,10 @@ const ondateToChange = (e, to) => {
           <div className="field col">
             <label htmlFor="quantity">Training Remark</label>
             <InputText
-              id="name"
-              value={schedule.name}
+              id="trainingremark"
+              value={schedule.trainingremark}
               onChange={(e) => onInputChange(e, "trainingremark")}
-              required
-              autoFocus
-              className={classNames({ "p-invalid": submitted && !schedule.name })}
             />
-            {submitted && !schedule.trainingremark && (
-              <small className="p-error">training remark is required.</small>
-            )}
           </div>
         </Dialog>
 
@@ -896,7 +872,7 @@ const ondateToChange = (e, to) => {
             />
             {schedule && (
               <span>
-                Are you sure you want to delete <b>{schedule.name}</b>?
+                Are you sure you want to delete <b>{schedule.day}</b>?
               </span>
             )}
           </div>

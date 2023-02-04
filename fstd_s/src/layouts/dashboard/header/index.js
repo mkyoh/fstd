@@ -15,8 +15,6 @@ import { HEADER, NAVBAR } from '../../../config';
 import Logo from '../../../components/Logo';
 import Iconify from '../../../components/Iconify';
 import { IconButtonAnimate } from '../../../components/animate';
-// //
-import Searchbar from './Searchbar';
 import AccountPopover from './AccountPopover';
 
 
@@ -68,8 +66,9 @@ export default function DashboardHeader({ onOpenSidebar, isCollapse = false, ver
     <RootStyle isCollapse={isCollapse} isOffset={isOffset} verticalLayout={verticalLayout}>
       <Toolbar
         sx={{
-          minHeight: '100% !important',
+          minHeight: '80% !important',
           px: { lg: 5 },
+          backgroundColor:'rgb(207, 207, 196)',
         }}
       >
         {isDesktop && verticalLayout && <Logo sx={{ mr: 2.5 }} />}
@@ -80,11 +79,10 @@ export default function DashboardHeader({ onOpenSidebar, isCollapse = false, ver
           </IconButtonAnimate>
         )}
 
-        <Searchbar />
         <Box sx={{ flexGrow: 1 }} />
 
         <Stack direction="row" alignItems="center" spacing={{ xs: 0.5, sm: 1.5 }}>
-         <Link to={'/'} style={{  color: "green", textDecoration:"none"}}>Home</Link>
+         <Link to={'/'} style={{  color: "green"}}>Home</Link>
           {/* <NotificationsPopover /> */}
           {/* <ContactsPopover /> */}
           <AccountPopover />

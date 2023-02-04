@@ -34,6 +34,7 @@ export const MAPBOX_API = process.env.REACT_APP_MAPBOX;
 
 
 export const PATH_AFTER_LOGIN = '/dashboard/scheduler'; // as '/dashboard/app'
+export const PATH_AFTER_SIGNIN = '/dashboard/scheduler';
 
 // LAYOUT
 // ----------------------------------------------------------------------

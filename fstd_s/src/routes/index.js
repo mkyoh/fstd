@@ -5,8 +5,10 @@ import DashboardLayout from '../layouts/dashboard';
 import GuestGuard from '../guards/GuestGuard';
 import AuthGuard from '../guards/AuthGuard';
 import { PATH_AFTER_LOGIN } from '../config';
+import { PATH_AFTER_SIGNIN } from '../config';
 // components
 import LoadingScreen from '../components/LoadingScreen';
+
 
 
 
@@ -36,6 +38,7 @@ export default function Router() {
           },
           { path: 'login-unprotected', element: <Login /> },
           { path: 'reset-password', element: <ResetPassword /> },
+          {path: 'trainee-signin', element: <TraineeSignin/>},
           { path: 'verify', element: <VerifyCode /> },
         ],
       },
@@ -56,6 +59,21 @@ export default function Router() {
 
         ],
       },
+         {
+        path: 'dashboard',
+        element: (
+          <AuthGuard>
+            <DashboardLayout />
+          </AuthGuard>   
+        ),
+        children: [
+          { element: <Navigate to={PATH_AFTER_SIGNIN} replace />, index: true },
+          { path: 'scheduler', element: <Scheduler /> },
+          // { path: 'about-us', element: <About /> },
+          // { path: 'contact-us', element: <Contact /> },
+        ],
+      },
+  
   
       {
         path: '/',
@@ -73,6 +91,7 @@ export default function Router() {
   }
 const Login = Loadable(lazy(() => import('../pages/auth/Login')));
 const ResetPassword = Loadable(lazy(() => import('../pages/auth/ResetPassword')));
+const TraineeSignin = Loadable(lazy(() => import('../pages/auth/TraineeSignin')));
 const VerifyCode = Loadable(lazy(() => import('../pages/auth/VerifyCode')));
 const Scheduler = Loadable(lazy(() => import('../pages/dashboard/Scheduler')));
 const TraineeList = Loadable(lazy(() => import('../pages/dashboard/TraineeList')));

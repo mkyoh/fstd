@@ -205,16 +205,7 @@ function MenuDesktopItem({ item, isHome, isOpen, isOffset, onOpen, onClose }) {
                               bgcolor: 'background.neutral',
                             }}
                           >
-                            <Box
-                              component={m.img}
-                              whileTap="tap"
-                              whileHover="hover"
-                              variants={{
-                                hover: { scale: 1.02 },
-                                tap: { scale: 0.98 },
-                              }}
-                              src="https://minimal-assets-api.vercel.app/assets/illustrations/illustration_dashboard.png"
-                            />
+                           
                           </CardActionArea>
                         ) : (
                           <>
@@ -241,7 +232,7 @@ function MenuDesktopItem({ item, isHome, isOpen, isOffset, onOpen, onClose }) {
         target="_blank"
         rel="noopener"
         sx={{
-          ...(isHome && { color: 'common.white' }),
+          ...(isHome && { color: 'common.black' }),
           ...(isOffset && { color: 'text.primary' }),
         }}
       >
@@ -256,7 +247,7 @@ function MenuDesktopItem({ item, isHome, isOpen, isOffset, onOpen, onClose }) {
       component={RouterLink}
       end={path === '/'}
       sx={{
-        ...(isHome && { color: 'common.info' }),
+        ...(isHome && { color: 'common.main' }),
         ...(isOffset && { color: 'text.primary' }),
         '&.active': {
           color: 'primary.main',

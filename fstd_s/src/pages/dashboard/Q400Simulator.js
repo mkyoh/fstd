@@ -21,6 +21,7 @@ import { InputNumber } from "primereact/inputnumber";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
+import { MotionContainer} from '../../components/animate';
 import axios from '../../../src/utils/axios';
 import "./DataTableDemo.css";
 
@@ -518,6 +519,7 @@ const ondateToChange = (e, to) => {
     );
 
     return (
+     <MotionContainer>
       <div className="datatable-crud-demo">
         <Toast ref={toast} />
 
@@ -897,6 +899,7 @@ const ondateToChange = (e, to) => {
           </div>
         </Dialog>
       </div>
+      </MotionContainer>
     );
   };
 export default Q400Simulator;

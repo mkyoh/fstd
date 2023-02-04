@@ -57,12 +57,12 @@ export default function MainHeader() {
   const isHome = pathname === '/';
 
   return (
-    <AppBar sx={{ boxShadow: 3, bgcolor: 'transparent' }}>
+    <AppBar sx={{ boxShadow: 3, bgcolor: 'green' }}>
       <ToolbarStyle
         disableGutters
         sx={{
           ...(isOffset && {
-            ...cssStyles(theme).bgBlur(),
+            
             height: { md: HEADER.MAIN_DESKTOP_HEIGHT - 16 },
           }),
         }}
@@ -76,9 +76,9 @@ export default function MainHeader() {
         >
   
 
-          <Label color="primary" >
+          
            <h1>FSTD</h1>
-          </Label>
+       
           <Box sx={{ flexGrow: 1 }} />
 
           {isDesktop && <MenuDesktop isOffset={isOffset} isHome={isHome} navConfig={navConfig} />}

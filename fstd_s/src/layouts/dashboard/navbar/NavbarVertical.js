@@ -119,7 +119,7 @@ export default function NavbarVertical({ isOpenSidebar, onCloseSidebar }) {
             sx: {
               width: NAVBAR.DASHBOARD_WIDTH,
               borderRightStyle: 'dashed',
-              bgcolor: 'background.default',
+              bgcolor: 'background.grey',
               transition: (theme) =>
                 theme.transitions.create('width', {
                   duration: theme.transitions.duration.standard,

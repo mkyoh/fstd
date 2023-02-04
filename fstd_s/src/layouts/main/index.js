@@ -39,7 +39,7 @@ export default function MainLayout() {
             <Typography variant="caption" component="p">
               © All rights reserved
               <br /> made by &nbsp;
-              <Link href="https://minimals.cc/">FSTD</Link>
+              <Link href="https://minimals.cc/">SCMS</Link>
             </Typography>
           </Container>
         </Box>

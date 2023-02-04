@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
+import useAuth from '../../../hooks/useAuth';
 import { Link, Stack, Alert, IconButton, InputAdornment,Button } from '@mui/material';
 
 import Iconify from '../../../components/Iconify';
@@ -11,7 +12,7 @@ import { FormProvider, RHFTextField, RHFCheckbox } from '../../../components/hoo
 // ----------------------------------------------------------------------
 
 export default function TraineeForm() {
-
+const { signin } = useAuth();
 
   const defaultValues = {
     traineeId: '',
@@ -31,7 +32,7 @@ export default function TraineeForm() {
   const onSubmit = async (data) => {
     try {
       // console.log("hhhhhhhhhh")
-      await login(data.traineeId);
+      await signin(data.traineeId);
     } catch (error) {
       console.error(error);
       reset();

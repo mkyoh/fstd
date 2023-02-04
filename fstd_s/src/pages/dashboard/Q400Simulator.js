@@ -570,21 +570,21 @@ const ondateToChange = (e, to) => {
               style={{ minWidth: "10rem" }}
             ></Column>
             <Column
-              id="from"
+              field="from"
               header="From"
                sortable
               integeronly
                style={{ minWidth: "3rem" }}
             ></Column>
             <Column
-              id="to"
+              field="to"
               header="To"
                sortable
               integeronly
                style={{ minWidth: "3rem" }}
             ></Column>
             <Column
-              id="duration"
+              field="duration"
               header="Duration"
                sortable
               integeronly

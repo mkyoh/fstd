@@ -57,7 +57,7 @@ export default function MainHeader() {
   const isHome = pathname === '/';
 
   return (
-    <AppBar sx={{ boxShadow: 3, bgcolor: 'green' }}>
+    <AppBar sx={{  boxShadow: 3, bgcolor: 'rgb(37, 128, 37)' }}>
       <ToolbarStyle
         disableGutters
         sx={{
@@ -77,7 +77,7 @@ export default function MainHeader() {
   
 
           
-           <h1>FSTD</h1>
+           <h1>SCMS</h1>
        
           <Box sx={{ flexGrow: 1 }} />
 

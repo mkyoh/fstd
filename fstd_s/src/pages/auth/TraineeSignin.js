@@ -46,7 +46,7 @@ export default function Login() {
               <Box sx={{ flexGrow: 1 }}>
                 <img src='/favicon/Aircraft.jpg' alt='logo'/>
                 <Typography variant="h4" gutterBottom align='center' >
-                  Welcome Trainee Sign in to SCMS
+                Trainee? Signin to SCMS
                 </Typography>
               </Box>
             </Stack>

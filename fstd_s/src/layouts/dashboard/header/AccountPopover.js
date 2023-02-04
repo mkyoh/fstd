@@ -4,6 +4,7 @@ import { Link as RouterLink, useNavigate } from 'react-router-dom';
 // @mui
 import { alpha } from '@mui/material/styles';
 import { Box, Divider, Typography, Stack, MenuItem } from '@mui/material';
+import { AuthContext } from '../../../contexts/Auth0Context';
 // routes
 import { PATH_AUTH } from '../../../routes/paths';
 // import { PATH_DASHBOARD, PATH_AUTH } from '../../../routes/paths';
@@ -106,9 +107,9 @@ export default function AccountPopover() {
           <Typography variant="subtitle2" noWrap>
             {user?.displayuserName}
           </Typography>
-          {/* <Typography variant="subtitle2" noWrap> 
-            {admin?.userName}
-          </Typography> */}
+          <Typography variant="subtitle2" noWrap> 
+            {user?.userName}
+          </Typography>
         </Box>
 
         <Divider sx={{ borderStyle: 'dashed' }} />

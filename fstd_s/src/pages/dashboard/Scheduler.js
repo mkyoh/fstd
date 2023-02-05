@@ -56,40 +56,9 @@ const Scheduler = () => {
       });
     };
 
-
-    const leftToolbarTemplate = () => {
-      return (
-        <React.Fragment>
-          <Button
-            label="New"
-            icon="pi pi-plus"
-            className="p-button-success mr-2"
-            onClick={openNew}
-          />
-          <Button
-            label="Delete"
-            icon="pi pi-trash"
-            className="p-button-danger"
-            onClick={confirmDeleteSelected}
-            disabled={!selectedSchedules || !selectedSchedules.length}
-          />
-        </React.Fragment>
-      );
-    };
-
     const rightToolbarTemplate = () => {
       return (
         <React.Fragment>
-          <FileUpload
-            mode="basic"
-            name="demo[]"
-            auto
-            url="https://primefaces.org/primereact/showcase/upload.php"
-            accept=".csv"
-            chooseLabel="Import"
-            className="mr-2 inline-block"
-            onUpload={importCSV}
-          />
           <Button
             label="Export"
             icon="pi pi-upload"
@@ -120,7 +89,6 @@ const Scheduler = () => {
         <div className="card">
           <Toolbar
             className="mb-4"
-            left={leftToolbarTemplate}
             right={rightToolbarTemplate}
           ></Toolbar>
 
@@ -225,11 +193,6 @@ const Scheduler = () => {
               header="Training Remark"
               sortable
               style={{ minWidth: "12rem" }}
-            ></Column>
-            <Column
-              body={actionBodyTemplate}
-              exportable={false}
-              style={{ minWidth: "8rem" }}
             ></Column>
           </DataTable>
         </div>

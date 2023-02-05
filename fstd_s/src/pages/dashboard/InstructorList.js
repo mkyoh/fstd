@@ -11,6 +11,7 @@ import { FilterMatchMode, FilterOperator } from "primereact/api";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { InputText } from "primereact/inputtext";
+import { Toolbar } from "primereact/toolbar";
 import { Dropdown } from "primereact/dropdown";
 import { InputNumber } from "primereact/inputnumber";
 import { Button } from "primereact/button";
@@ -25,7 +26,22 @@ import { isValidToken, setSession } from '../../../src/utils/jwt';
 import "./DataTableDemo.css";
 import { useDispatch } from "../../redux/store";
 
+
 const InstructorList = () => {
+   let emptyInstructor = {
+    // id: null,
+    // day: "",
+    // date: null,
+    // from:"",
+    
+  };
+
+   const [InstructorDialog, setInstructorDialog] = useState(false);
+  const [deleteInstructorDialog, setDeleteInstructorDialog] = useState(false);
+  const [deleteInstructorsDialog, setDeleteInstructorsDialog] = useState(false);
+  const [instructor, setInstructor] = useState(emptyInstructor);
+  const [selectedInstructors, setSelectedInstructors] = useState(null);
+  const [submitted, setSubmitted] = useState(false);
   const dispatch = useDispatch();
   const [customers1, setCustomers1] = useState([]);
   const [customers2, setCustomers2] = useState(null);
@@ -37,9 +53,18 @@ const InstructorList = () => {
   });
   const [globalFilterValue1, setGlobalFilterValue1] = useState("");
   const [loading1, setLoading1] = useState(true);
-
-
-
+  const confirmDeleteInstructor = (instructor) => {
+      setInstructor(instructor);
+      setDeleteInstructorDialog(true);
+    };
+ const confirmDeleteSelected = () => {
+      setDeleteInstructorsDialog(true);
+    };
+const openNew = () => {
+      setInstructor(emptyInstructor);
+      setSubmitted(false);
+      setInstructorDialog(true);
+    };
   useEffect(() => {
     const initialize = async () => {
       try {
@@ -118,19 +143,56 @@ initialize();
   };
 
  
+const leftToolbarTemplate = () => {
+      return (
+        <React.Fragment>
+          <Button
+            label="New"
+            icon="pi pi-plus"
+            className="p-button-success mr-2"
+            onClick={openNew}
+          />
+          <Button
+            label="Delete"
+            icon="pi pi-trash"
+            className="p-button-danger"
+            onClick={confirmDeleteSelected}
+            disabled={!selectedInstructors || !selectedInstructors.length}
+          />
+        </React.Fragment>
+      );
+    };
 
 
  
   const header1 = renderHeader1();
   
-  
+   const actionBodyTemplate = (rowData) => {
+      return (
+        <React.Fragment>
+          <Button
+            icon="pi pi-pencil"
+            className="p-button-rounded p-button-success mr-2"
+            onClick={() => editInstructor(rowData)}
+          />
+          <Button
+            icon="pi pi-trash"
+            className="p-button-rounded p-button-warning"
+            onClick={() => confirmDeleteInstructor(rowData)}
+          />
+        </React.Fragment>
+      );
+    };
 
   return (
     <div className="datatable-filter-demo">
       <div className="card">
         <h5>Instructor List</h5>
         {/* <p>Filters are displayed in an overlay.</p> */}
-       
+          <Toolbar
+            className="mb-4"
+            left={leftToolbarTemplate}
+          ></Toolbar>
         <DataTable
         value={customers1}
           paginator
@@ -171,6 +233,10 @@ initialize();
              header="InstructorId"
              style={{ minWidth: "14rem" }}
           />
+           <Column
+              body={actionBodyTemplate}
+              style={{ minWidth: "8rem" }}
+            ></Column>
         </DataTable>
       </div>
         </div>

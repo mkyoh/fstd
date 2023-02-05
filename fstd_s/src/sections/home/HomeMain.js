@@ -52,7 +52,7 @@ export default function HomeMain() {
     <MotionContainer>
       <RootStyle>
 
-        <Container>
+        <Container component={MotionContainer} sx={{ position: 'relative', height: '100%' }}>
           <ContentStyle>
                   {/* <img
                       alt="simulator training"

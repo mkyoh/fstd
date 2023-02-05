@@ -72,7 +72,7 @@ export default function Login() {
           <ContentStyle>
             <Stack direction="row" alignItems="center" sx={{ mb: 5 }}>
               <Box sx={{ flexGrow: 1 }}>
-                <img src='/favicon/Aircraft.jpg' alt='logo'/>
+                <img src='/favicon/Logoo.png' alt='logo'/>
                 <Typography variant="h4" gutterBottom align='center' >
                   Sign in to SCMS
                 </Typography>

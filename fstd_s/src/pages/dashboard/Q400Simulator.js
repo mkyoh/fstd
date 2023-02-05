@@ -38,7 +38,8 @@ const Q400Simulator = () => {
     trainee2: null,
     trainingtype: null,
     lesson: "",
-    trainingremark: ""
+    trainingremark: "",
+    simulatordowntime:"",
   };
 
   const [schedules, setSchedules] = useState(null);
@@ -633,6 +634,11 @@ const ondateToChange = (e, to) => {
               style={{ minWidth: "12rem" }}
             ></Column>
             <Column
+              field="simulatordowntime"
+              header="Simulator Down Time"
+              style={{ minWidth: "3rem" }}
+            ></Column>
+            <Column
               body={actionBodyTemplate}
               exportable={false}
               style={{ minWidth: "8rem" }}
@@ -850,11 +856,19 @@ const ondateToChange = (e, to) => {
             </div>
           </div>
           <div className="field col">
-            <label htmlFor="quantity">Training Remark</label>
+            <label htmlFor="trainingremark">Training Remark</label>
             <InputText
               id="trainingremark"
               value={schedule.trainingremark}
               onChange={(e) => onInputChange(e, "trainingremark")}
+            />
+          </div>
+           <div className="field col">
+            <label htmlFor="simulatordowntime">Training Remark</label>
+            <InputText
+              id="simulatordowntime"
+              value={schedule.trainingremark}
+              onChange={(e) => onInputChange(e, "simulatordowntime")}
             />
           </div>
         </Dialog>

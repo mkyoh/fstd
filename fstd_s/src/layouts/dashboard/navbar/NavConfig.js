@@ -59,15 +59,11 @@ const navConfig = [
      icon: ICONS.banking,
      items: [
       { 
-        title: 'Simulator Type',
+        title: 'Schedule view Type',
         children:[
-     { title: 'Q400 Simulator', path: PATH_DASHBOARD.q400simulator},
-     { title: 'New 737max', path: PATH_DASHBOARD.scheduler },
-     { title: 'New 737NG', path: PATH_DASHBOARD.scheduler},
-     { title: 'New 737MPS', path: PATH_DASHBOARD.scheduler},
-     { title: '737 NG', path: PATH_DASHBOARD.scheduler},
-     { title: 'New Q400 FTD', path: PATH_DASHBOARD.scheduler},
-     { title: 'New Q400 SIM', path: PATH_DASHBOARD.scheduler},
+     { title: 'Admins View', path: PATH_DASHBOARD.q400simulator},
+     { title: 'Trainees View', path: PATH_DASHBOARD.scheduler },
+     
 
      ],
     },

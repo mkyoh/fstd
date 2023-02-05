@@ -19,8 +19,8 @@ export default function Logo({ disabledLink = false, sx }) {
 
   const logo = (
    
-   <Box sx={{ width: 40, height: 40, ...sx }}>
-     <img src='/favicon/Logo.png' style={{ width: "100vh" }} alt="logo"/> FSTD
+   <Box sx={{ width: 60, height: 60, ...sx }}>
+     <img src='/favicon/Logo.png' style={{ width: "100vh" }} alt="logo"/> SCMS
    </Box>
     
   );

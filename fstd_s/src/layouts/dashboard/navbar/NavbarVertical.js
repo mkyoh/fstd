@@ -71,9 +71,10 @@ export default function NavbarVertical({ isOpenSidebar, onCloseSidebar }) {
           px: 2.5,
           flexShrink: 0,
           ...(isCollapse && { alignItems: 'center' }),
+          backgroundColor:'lightgrey',
         }}
       >
-        <Stack direction="row" alignItems="center" justifyContent="space-between">
+        <Stack direction="row" alignItems="center" justifyContent="space-between" >
           <Logo />
 
           {isDesktop && !isCollapse && (
@@ -84,7 +85,7 @@ export default function NavbarVertical({ isOpenSidebar, onCloseSidebar }) {
         <NavbarAccount isCollapse={isCollapse} />
       </Stack>
 
-      <NavSectionVertical navConfig={navConfig} isCollapse={isCollapse} />
+      <NavSectionVertical navConfig={navConfig} isCollapse={isCollapse} backgroundColor="lightgrey" />
 
       {/* <Box sx={{ flexGrow: 1 }} />
 

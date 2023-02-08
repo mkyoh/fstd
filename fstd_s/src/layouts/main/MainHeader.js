@@ -6,12 +6,12 @@ import { Box, Button, AppBar, Toolbar, Container } from '@mui/material';
 import useOffSetTop from '../../hooks/useOffSetTop';
 import useResponsive from '../../hooks/useResponsive';
 // utils
-import cssStyles from '../../utils/cssStyles';
+//import cssStyles from '../../utils/cssStyles';
 // config
 import { HEADER } from '../../config';
 // components
-import Logo from '../../components/Logo';
-import Label from '../../components/Label';
+// import Logo from '../../components/Logo';
+// import Label from '../../components/Label';
 //
 import MenuDesktop from './MenuDesktop';
 import MenuMobile from './MenuMobile';
@@ -57,12 +57,12 @@ export default function MainHeader() {
   const isHome = pathname === '/';
 
   return (
-    <AppBar sx={{  boxShadow: 3, bgcolor: 'rgb(37, 128, 37)' }}>
+    <AppBar sx={{ boxShadow: 3, bgcolor: 'rgb(37, 128, 37)' }}>
       <ToolbarStyle
         disableGutters
         sx={{
           ...(isOffset && {
-            
+
             height: { md: HEADER.MAIN_DESKTOP_HEIGHT - 16 },
           }),
         }}
@@ -74,11 +74,11 @@ export default function MainHeader() {
             justifyContent: 'space-between',
           }}
         >
-  
 
-          
-           <h1>SCMS</h1>
-       
+
+
+          <h1>SCMS</h1>
+
           <Box sx={{ flexGrow: 1 }} />
 
           {isDesktop && <MenuDesktop isOffset={isOffset} isHome={isHome} navConfig={navConfig} />}
@@ -88,9 +88,12 @@ export default function MainHeader() {
             href="http://localhost:3000/auth/Login">
             Scheduler
           </Button>
+          <br />
+          <br />
 
           {!isDesktop && <MenuMobile isOffset={isOffset} isHome={isHome} navConfig={navConfig} />}
         </Container>
+        <img src='/favicon/Logoo.png' width='150px' height='50px' alt='logo' />
       </ToolbarStyle>
 
       {isOffset && <ToolbarShadowStyle />}

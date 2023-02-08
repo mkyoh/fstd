@@ -12,31 +12,25 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { InputText } from "primereact/inputtext";
 import { Toolbar } from "primereact/toolbar";
-import { Dropdown } from "primereact/dropdown";
-import { InputNumber } from "primereact/inputnumber";
+import { Dialog } from "primereact/dialog";
 import { Button } from "primereact/button";
 import { ProgressBar } from "primereact/progressbar";
-import { Calendar } from "primereact/calendar";
-import { MultiSelect } from "primereact/multiselect";
-import { Slider } from "primereact/slider";
-import { TriStateCheckbox } from "primereact/tristatecheckbox";
 import axios from '../../../src/utils/axios';
 import { isValidToken, setSession } from '../../../src/utils/jwt';
-
 import "./DataTableDemo.css";
 import { useDispatch } from "../../redux/store";
 
 
 const InstructorList = () => {
-   let emptyInstructor = {
-    // id: null,
-    // day: "",
-    // date: null,
-    // from:"",
-    
+  let emptyInstructor = {
+    id: null,
+    firstName: "",
+    lastName: null,
+    instructorId: "",
+
   };
 
-   const [InstructorDialog, setInstructorDialog] = useState(false);
+  const [InstructorDialog, setInstructorDialog] = useState(false);
   const [deleteInstructorDialog, setDeleteInstructorDialog] = useState(false);
   const [deleteInstructorsDialog, setDeleteInstructorsDialog] = useState(false);
   const [instructor, setInstructor] = useState(emptyInstructor);
@@ -54,59 +48,152 @@ const InstructorList = () => {
   const [globalFilterValue1, setGlobalFilterValue1] = useState("");
   const [loading1, setLoading1] = useState(true);
   const confirmDeleteInstructor = (instructor) => {
-      setInstructor(instructor);
-      setDeleteInstructorDialog(true);
-    };
- const confirmDeleteSelected = () => {
-      setDeleteInstructorsDialog(true);
-    };
-const openNew = () => {
+    setInstructor(instructor);
+    setDeleteInstructorDialog(true);
+  };
+  const confirmDeleteSelected = () => {
+    setDeleteInstructorsDialog(true);
+  };
+  const openNew = () => {
+    setInstructor(emptyInstructor);
+    setSubmitted(false);
+    setInstructorDialog(true);
+  };
+  const hideDialog = () => {
+    setSubmitted(false);
+    setInstructorDialog(false);
+  };
+
+  const hideDeleteInstructorDialog = () => {
+    setDeleteInstructorDialog(false);
+  };
+
+  const hideDeleteInstructorsDialog = () => {
+    setDeleteInstructorsDialog(false);
+  };
+  const saveInstructor = () => {
+    setSubmitted(true);
+
+    if (instructor.day?.name.trim()) {
+      let _instructors = { ...instructor };
+      let _instructor = { ...instructor };
+      if (instructor.id) {
+        const index = findIndexById(instructor.id);
+
+        _instructor[index] = _instructor;
+        toast.current.show({
+          severity: "success",
+          summary: "Successful",
+          detail: "Schedule Updated",
+          life: 3000
+        });
+      } else {
+        const accessToken = window.localStorage.getItem('accessToken');
+        console.log(instructor)
+        let data = new FormData();
+        axios({
+          headers: {
+            Authorization: `Bearer ${accessToken}`
+          },
+          url: "/Instructor/api/V1.0/Instructor/Create",
+          method: 'Post',
+          body: data
+        })
+        toast.current.show({
+          severity: "success",
+          summary: "Successful",
+          detail: "instructor Created",
+          life: 3000
+        });
+      }
+
+      setInstructors(_instructors);
+      setInstructorDialog(false);
       setInstructor(emptyInstructor);
-      setSubmitted(false);
-      setInstructorDialog(true);
-    };
+    }
+  };
+  const InstructorDialogFooter = (
+    <React.Fragment>
+      <Button
+        label="Cancel"
+        icon="pi pi-times"
+        className="p-button-text"
+        onClick={hideDialog}
+      />
+      <Button
+        label="Save"
+        icon="pi pi-check"
+        className="p-button-text"
+        onClick={saveInstructor}
+      />
+    </React.Fragment>
+  );
+  const deleteInstructor = () => {
+    let _instructors = instructors.filter((val) => val.id !== instructor.id);
+    setInstructors(_instructors);
+    setDeleteInstructorDialog(false);
+    setInstructor(emptyInstructor);
+    toast.current.show({
+      severity: "success",
+      summary: "Successful",
+      detail: "Instructor Deleted",
+      life: 3000
+    });
+  }; const deleteSelectedInstructors = () => {
+    let _instructors = schedules.filter((val) => !selectedInstructors.includes(val));
+    setInstructors(_instructors);
+    setDeleteInstructorsDialog(false);
+    setSelectedInstructors(null);
+    toast.current.show({
+      severity: "success",
+      summary: "Successful",
+      detail: "instructors Deleted",
+      life: 3000
+    });
+  };
+
   useEffect(() => {
     const initialize = async () => {
       try {
         const accessToken = window.localStorage.getItem('accessToken');
-    
+
         if (accessToken && isValidToken(accessToken)) {
           setSession(accessToken);
-    const response = await axios.get("/MasterData/api/V1.0/Instructor/GetAll");
-    const masterData= response.data;
-    console.log(masterData)
-    response && masterData ? setLoading1(false) : null
-    response && masterData.status == 1 ? setCustomers1(masterData.instructorsRes) : null
-    dispatch({
-      type: 'INITIALIZE',
-      payload: {
-        isAuthenticated: true,
-        masterData,
-      },
-    });
-  } else {
-    dispatch({
-      type: 'INITIALIZE',
-      payload: {
-        isAuthenticated: false,
-        masterData: null,
-      },
-    });
-  }
-} catch (err) {
- 
-  dispatch({
-    type: 'INITIALIZE',
-    payload: {
-      isAuthenticated: false,
-      masterData: null,
-    },
-  });
-}
-};
+          const response = await axios.get("/MasterData/api/V1.0/Instructor/GetAll");
+          const masterData = response.data;
+          console.log(masterData)
+          response && masterData ? setLoading1(false) : null
+          response && masterData.status == 1 ? setCustomers1(masterData.instructorsRes) : null
+          dispatch({
+            type: 'INITIALIZE',
+            payload: {
+              isAuthenticated: true,
+              masterData,
+            },
+          });
+        } else {
+          dispatch({
+            type: 'INITIALIZE',
+            payload: {
+              isAuthenticated: false,
+              masterData: null,
+            },
+          });
+        }
+      } catch (err) {
 
-initialize();
-}, []);
+        dispatch({
+          type: 'INITIALIZE',
+          payload: {
+            isAuthenticated: false,
+            masterData: null,
+          },
+        });
+      }
+    };
+
+    initialize();
+  }, []);
 
 
   const statuses = [
@@ -142,59 +229,93 @@ initialize();
     );
   };
 
- 
-const leftToolbarTemplate = () => {
-      return (
-        <React.Fragment>
-          <Button
-            label="New"
-            icon="pi pi-plus"
-            className="p-button-success mr-2"
-            onClick={openNew}
-          />
-          <Button
-            label="Delete"
-            icon="pi pi-trash"
-            className="p-button-danger"
-            onClick={confirmDeleteSelected}
-            disabled={!selectedInstructors || !selectedInstructors.length}
-          />
-        </React.Fragment>
-      );
-    };
 
+  const leftToolbarTemplate = () => {
+    return (
+      <React.Fragment>
+        <Button
+          label="New"
+          icon="pi pi-plus"
+          className="p-button-success mr-2"
+          onClick={openNew}
+        />
+        <Button
+          label="Delete"
+          icon="pi pi-trash"
+          className="p-button-danger"
+          onClick={confirmDeleteSelected}
+          disabled={!selectedInstructors || !selectedInstructors.length}
+        />
+      </React.Fragment>
+    );
+  };
 
- 
+  const deleteInstructorDialogFooter = (
+    <React.Fragment>
+      <Button
+        label="No"
+        icon="pi pi-times"
+        className="p-button-text"
+        onClick={hideDeleteInstructorDialog}
+      />
+      <Button
+        label="Yes"
+        icon="pi pi-check"
+        className="p-button-text"
+        onClick={deleteInstructor}
+      />
+    </React.Fragment>
+  );
+  const deleteInstructorsDialogFooter = (
+    <React.Fragment>
+      <Button
+        label="No"
+        icon="pi pi-times"
+        className="p-button-text"
+        onClick={hideDeleteInstructorsDialog}
+      />
+      <Button
+        label="Yes"
+        icon="pi pi-check"
+        className="p-button-text"
+        onClick={deleteSelectedInstructors}
+      />
+    </React.Fragment>
+  );
+  const actionBodyTemplate = (rowData) => {
+    return (
+      <React.Fragment>
+        <Button
+          icon="pi pi-pencil"
+          className="p-button-rounded p-button-success mr-2"
+          onClick={() => editInstructor(rowData)}
+        />
+        <Button
+          icon="pi pi-trash"
+          className="p-button-rounded p-button-warning"
+          onClick={() => confirmDeleteInstructor(rowData)}
+        />
+      </React.Fragment>
+    );
+  };
+
   const header1 = renderHeader1();
-  
-   const actionBodyTemplate = (rowData) => {
-      return (
-        <React.Fragment>
-          <Button
-            icon="pi pi-pencil"
-            className="p-button-rounded p-button-success mr-2"
-            onClick={() => editInstructor(rowData)}
-          />
-          <Button
-            icon="pi pi-trash"
-            className="p-button-rounded p-button-warning"
-            onClick={() => confirmDeleteInstructor(rowData)}
-          />
-        </React.Fragment>
-      );
-    };
+
+
 
   return (
     <div className="datatable-filter-demo">
       <div className="card">
         <h5>Instructor List</h5>
         {/* <p>Filters are displayed in an overlay.</p> */}
-          <Toolbar
-            className="mb-4"
-            left={leftToolbarTemplate}
-          ></Toolbar>
+        <Toolbar
+          className="mb-4"
+          left={leftToolbarTemplate}
+        ></Toolbar>
         <DataTable
-        value={customers1}
+          value={customers1}
+          selection={selectedInstructors}
+          onSelectionChange={(e) => setSelectedInstructors(e.value)}
           paginator
           className="p-datatable-customers"
           showGridlines
@@ -208,38 +329,99 @@ const leftToolbarTemplate = () => {
             "firstName",
             "lastName",
             "instructorId",
-      
+
           ]}
           header={header1}
           emptyMessage="No customers found."
         >
-            <Column
-             field="id"
-             header="Id"
-            />
+          <Column
+            selectionMode="multiple"
+            headerStyle={{ width: "3rem" }}
+            exportable={false}
+          ></Column>
+          <Column
+            field="id"
+            header="Id"
+          />
           <Column
             field="firstName"
             header="First Name"
             style={{ minWidth: "12rem" }}
           />
           <Column
-             field="lastName"
-             header="Last Name"
-             style={{ minWidth: "12rem" }}
-            
+            field="lastName"
+            header="Last Name"
+            style={{ minWidth: "12rem" }}
+
           />
           <Column
-             field="instructorId"
-             header="InstructorId"
-             style={{ minWidth: "14rem" }}
+            field="instructorId"
+            header="InstructorId"
+            style={{ minWidth: "14rem" }}
           />
-           <Column
-              body={actionBodyTemplate}
-              style={{ minWidth: "8rem" }}
-            ></Column>
+          <Column
+            body={actionBodyTemplate}
+            style={{ minWidth: "8rem" }}
+          ></Column>
         </DataTable>
       </div>
+      <Dialog visible={InstructorDialog} style={{ width: '450px' }} header="Instructors Details" modal className="p-fluid" footer={InstructorDialogFooter} onHide={hideDialog}>
+        <div className="field">
+          <label htmlFor="firstName">First Name</label>
+          <InputText id="firstName" value={instructor.firstName} onChange={(e) => onInputChange(e, 'firstName')} required autoFocus className={classNames({ 'p-invalid': submitted && !instructor.name })} />
+          {submitted && !instructor.firstName && <small className="p-error">first Name is required.</small>}
         </div>
+        <div className="field">
+          <label htmlFor="lastName">Last Name</label>
+          <InputText id="lastName" value={instructor.firstName} onChange={(e) => onInputChange(e, 'lastName')} required autoFocus className={classNames({ 'p-invalid': submitted && !instructor.name })} />
+          {submitted && !instructor.lastName && <small className="p-error">Last Name is required.</small>}
+        </div>
+        <div className="field">
+          <label htmlFor="instructorId">InstructorId</label>
+          <InputText id="instructorId" value={instructor.firstName} onChange={(e) => onInputChange(e, 'instructorId')} required autoFocus className={classNames({ 'p-invalid': submitted && !instructor.name })} />
+          {submitted && !instructor.instructorId && <small className="p-error">first Name is required.</small>}
+        </div>
+      </Dialog>
+      <Dialog
+        visible={deleteInstructorDialog}
+        style={{ width: "450px" }}
+        header="Confirm"
+        modal
+        footer={deleteInstructorDialogFooter}
+        onHide={hideDeleteInstructorDialog}
+      >
+        <div className="confirmation-content">
+          <i
+            className="pi pi-exclamation-triangle mr-3"
+            style={{ fontSize: "2rem" }}
+          />
+          {instructor && (
+            <span>
+              Are you sure you want to delete <b>{instructor.instructorId}</b>?
+            </span>
+          )}
+        </div>
+      </Dialog>
+
+      <Dialog
+        visible={deleteInstructorsDialog}
+        style={{ width: "450px" }}
+        header="Confirm"
+        modal
+        footer={deleteInstructorsDialogFooter}
+        onHide={hideDeleteInstructorsDialog}
+      >
+        <div className="confirmation-content">
+          <i
+            className="pi pi-exclamation-triangle mr-3"
+            style={{ fontSize: "2rem" }}
+          />
+          {instructor && (
+            <span>Are you sure you want to delete the selected instructors?</span>
+          )}
+        </div>
+      </Dialog>
+    </div>
   );
 };
 

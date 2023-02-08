@@ -3,20 +3,18 @@ import { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import useAuth from '../../../hooks/useAuth';
-import { Link, Stack, Alert, IconButton, InputAdornment,Button } from '@mui/material';
-
-import Iconify from '../../../components/Iconify';
+import { Link, Button } from '@mui/material';
 import { PATH_AUTH } from '../../../routes/paths';
 import { FormProvider, RHFTextField, RHFCheckbox } from '../../../components/hook-form';
 
 // ----------------------------------------------------------------------
 
 export default function TraineeForm() {
-const { signin } = useAuth();
+  const { signin } = useAuth();
 
   const defaultValues = {
     traineeId: '',
-  
+
   };
 
   const methods = useForm({
@@ -36,19 +34,23 @@ const { signin } = useAuth();
     } catch (error) {
       console.error(error);
       reset();
-      }
     }
- 
+  }
+
 
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
-     <RHFTextField name="traineeId" label="TraineeId" />
-     <br/>
-     <br/>
-       <Button fullWidth size="large" type="submit" variant="contained">
-          Login
-       </Button>
-    
+      <RHFTextField name="traineeId" label="TraineeId" />
+      <br />
+
+      <Link component={RouterLink} variant="h6" to={PATH_AUTH.login}>
+        Admin Login Page
+      </Link>
+      <br />
+      <Button fullWidth size="large" type="submit" variant="contained">
+        Login
+      </Button>
+
     </FormProvider>
   );
 }

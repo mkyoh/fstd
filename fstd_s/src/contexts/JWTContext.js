@@ -32,15 +32,15 @@ const handlers = {
       user,
     };
   },
-  SIGNIN: (state, action) => {
-    const {trainee } = action.payload;
+  // SIGNIN: (state, action) => {
+  //   const {trainee } = action.payload;
 
-    return {
-      ...state,
-      isAuthenticated: true,
-      user,
-    };
-  },
+  //   return {
+  //     ...state,
+  //     isAuthenticated: true,
+  //     user,
+  //   };
+  // },
   LOGOUT: (state) => ({
     ...state,
     isAuthenticated: false,
@@ -62,7 +62,6 @@ const reducer = (state, action) => (handlers[action.type] ? handlers[action.type
 const AuthContext = createContext({
   ...initialState,
   method: 'jwt',
-  signin: () => Promise.resolve(),
   login: () => Promise.resolve(),
   logout: () => Promise.resolve(),
   // register: () => Promise.resolve(),
@@ -120,13 +119,10 @@ function AuthProvider({ children }) {
   }, []);
 
   const login = async (userName, password) => {
-    // console.log(userName + "gggg"+password)
+    console.log(userName + "gggg"+password)
     const response = await axios({
       url: 'https://localhost:44306/User/api/V1.0/Account/SignIn',
       method:"post",
-      // headers: {
-      //   "Access-control-Allow-Credentials": true,
-      // },
        data: {
         userName,
         password,
@@ -136,7 +132,7 @@ function AuthProvider({ children }) {
     });
     console.log(response)
     const { accessToken, user } = response.data;
-
+    console.log(accessToken)
     setSession(accessToken);
     dispatch({
       type: 'LOGIN',
@@ -145,33 +141,7 @@ function AuthProvider({ children }) {
       },
     });
   };
-const signin = async () => {
-   
-    console.log("hhh" )
-    const response = await axios({
-      url: 'https://localhost:44306/MasterData/api/V1.0/Trainee/GetAll',
-      method:"get",
-      // headers: {
-      //   "Access-control-Allow-Credentials": true,
-      // },
-       data: {
-        traineeId
-      }, });
-    window.localStorage.setItem('accessToken', accessToken);
-      
-   
-    
-    const { accessToken} = response.data;
-console.log(response)
-    dispatch({
-      type: 'SIGNIN',
-      payload: {
-        trainee,
-      },
-    });
-  };
-
-  // const register = async (userName, password, firstName, lastName) => {
+ // const register = async (userName, password, firstName, lastName) => {
   //   const response = await axios.post('/api/account/register', {
   //     userName,
   //     password,
@@ -199,7 +169,6 @@ console.log(response)
       value={{
         ...state,
         method: 'jwt',
-        signin,
         login,
         logout,
       }}

@@ -12,7 +12,7 @@ import Iconify from '../../components/Iconify';
 
 const LinkStyle = styled(Link)(({ theme }) => ({
   ...theme.typography.subtitle2,
-  color: theme.palette.text.primary,
+  color: theme.palette.text.white,
   marginRight: theme.spacing(5),
   transition: theme.transitions.create('opacity', {
     duration: theme.transitions.duration.shorter,
@@ -27,10 +27,10 @@ const ListItemStyle = styled(ListItem)(({ theme }) => ({
   ...theme.typography.body2,
   padding: 0,
   marginTop: theme.spacing(3),
-  color: theme.palette.text.secondary,
+  color: theme.palette.text.white,
   transition: theme.transitions.create('color'),
   '&:hover': {
-    color: theme.palette.text.primary,
+    color: theme.palette.text.white,
   },
 }));
 
@@ -129,8 +129,8 @@ function MenuDesktopItem({ item, isHome, isOpen, isOffset, onOpen, onClose }) {
             display: 'flex',
             cursor: 'pointer',
             alignItems: 'center',
-            ...(isHome && { color: 'common.secondary' }),
-            ...(isOffset && { color: 'text.primary' }),
+            ...(isHome && { color: 'common.white' }),
+            ...(isOffset && { color: 'text.white' }),
             ...(isOpen && { opacity: 0.48 }),
           }}
         >
@@ -175,7 +175,7 @@ function MenuDesktopItem({ item, isHome, isOpen, isOffset, onOpen, onClose }) {
                         display: 'flex',
                         lineHeight: 'unset',
                         alignItems: 'center',
-                        color: 'text.primary',
+                        color: 'text.white',
                         typography: 'overline',
                       }}
                     >
@@ -190,7 +190,7 @@ function MenuDesktopItem({ item, isHome, isOpen, isOffset, onOpen, onClose }) {
                         underline="none"
                         sx={{
                           '&.active': {
-                            color: 'text.primary',
+                            color: 'text.white',
                             typography: 'subtitle2',
                           },
                         }}
@@ -201,7 +201,7 @@ function MenuDesktopItem({ item, isHome, isOpen, isOffset, onOpen, onClose }) {
                               py: 5,
                               px: 10,
                               borderRadius: 2,
-                              color: 'primary.main',
+                              color: 'primary.white',
                               bgcolor: 'background.neutral',
                             }}
                           >
@@ -232,8 +232,8 @@ function MenuDesktopItem({ item, isHome, isOpen, isOffset, onOpen, onClose }) {
         target="_blank"
         rel="noopener"
         sx={{
-          ...(isHome && { color: 'common.black' }),
-          ...(isOffset && { color: 'text.primary' }),
+          ...(isHome && { color: 'common.white' }),
+          ...(isOffset && { color: 'text.white' }),
         }}
       >
         {title}
@@ -247,10 +247,10 @@ function MenuDesktopItem({ item, isHome, isOpen, isOffset, onOpen, onClose }) {
       component={RouterLink}
       end={path === '/'}
       sx={{
-        ...(isHome && { color: 'common.main' }),
-        ...(isOffset && { color: 'text.primary' }),
+        ...(isHome && { color: 'common.white' }),
+        ...(isOffset && { color: 'text.white' }),
         '&.active': {
-          color: 'primary.main',
+          color: 'primary.white',
         },
       }}
     >

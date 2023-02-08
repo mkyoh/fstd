@@ -71,7 +71,7 @@ export default function NavbarVertical({ isOpenSidebar, onCloseSidebar }) {
           px: 2.5,
           flexShrink: 0,
           ...(isCollapse && { alignItems: 'center' }),
-          backgroundColor:'lightgrey',
+          backgroundColor:'darkgrey',
         }}
       >
         <Stack direction="row" alignItems="center" justifyContent="space-between" >
@@ -85,7 +85,7 @@ export default function NavbarVertical({ isOpenSidebar, onCloseSidebar }) {
         <NavbarAccount isCollapse={isCollapse} />
       </Stack>
 
-      <NavSectionVertical navConfig={navConfig} isCollapse={isCollapse} backgroundColor="lightgrey" />
+      <NavSectionVertical navConfig={navConfig} isCollapse={isCollapse} backgroundColor="darkgrey" />
 
       {/* <Box sx={{ flexGrow: 1 }} />
 
@@ -120,7 +120,7 @@ export default function NavbarVertical({ isOpenSidebar, onCloseSidebar }) {
             sx: {
               width: NAVBAR.DASHBOARD_WIDTH,
               borderRightStyle: 'dashed',
-              bgcolor: 'background.grey',
+              bgcolor: 'background.white',
               transition: (theme) =>
                 theme.transitions.create('width', {
                   duration: theme.transitions.duration.standard,

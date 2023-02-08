@@ -73,14 +73,14 @@ const InstructorList = () => {
   };
   const saveInstructor = () => {
     setSubmitted(true);
-
+     
     if (instructor.day?.name.trim()) {
-      let _instructors = { ...instructor };
-      let _instructor = { ...instructor };
+       let _instructors = { ...instructor };
+       let _instructor = { ...instructor };
       if (instructor.id) {
         const index = findIndexById(instructor.id);
 
-        _instructor[index] = _instructor;
+         _instructor[index] = _instructor;
         toast.current.show({
           severity: "success",
           summary: "Successful",
@@ -92,12 +92,11 @@ const InstructorList = () => {
         console.log(instructor)
         let data = new FormData();
         axios({
-          headers: {
-            Authorization: `Bearer ${accessToken}`
-          },
-          url: "/Instructor/api/V1.0/Instructor/Create",
-          method: 'Post',
-          body: data
+          headers:{
+          Authorization:`Bearer ${accessToken}`},
+          url:"/Instructor/api/V1.0/Instructor/Create",
+          method:'Post',
+          body:data
         })
         toast.current.show({
           severity: "success",
@@ -107,7 +106,7 @@ const InstructorList = () => {
         });
       }
 
-      setInstructors(_instructors);
+       setInstructors(_instructors);
       setInstructorDialog(false);
       setInstructor(emptyInstructor);
     }
@@ -301,7 +300,7 @@ const InstructorList = () => {
 
   const header1 = renderHeader1();
 
-
+  
 
   return (
     <div className="datatable-filter-demo">

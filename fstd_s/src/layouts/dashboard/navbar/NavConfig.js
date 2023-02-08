@@ -40,11 +40,9 @@ const navConfig = [
       },
   {
     subheader: 'Master Data', 
-    icon: ICONS.dashboard,
     items: [
       {
        title: 'Master Data',
-       icon: ICONS.dashboard,
        children: [
       { title: 'Trainees', path: PATH_DASHBOARD.traineelist },
       { title: 'Instructor', path: PATH_DASHBOARD.instructorlist },

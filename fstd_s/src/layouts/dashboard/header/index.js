@@ -68,7 +68,7 @@ export default function DashboardHeader({ onOpenSidebar, isCollapse = false, ver
         sx={{
           minHeight: '80% !important',
           px: { lg: 5 },
-          backgroundColor:'rgb(207, 207, 196)',
+          backgroundColor:'darkgrey',
         }}
       >
         {isDesktop && verticalLayout && <Logo sx={{ mr: 2.5 }} />}

@@ -73,7 +73,7 @@ export default function DashboardLayout() {
               xs: `${HEADER.MOBILE_HEIGHT + 24}px`,
               lg: `${HEADER.DASHBOARD_DESKTOP_HEIGHT + 24}px`,
             },
-            backgroundColor:'grey',
+            backgroundColor:'darkgrey',
           }}
           
         >

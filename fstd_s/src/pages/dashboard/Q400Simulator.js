@@ -3,72 +3,65 @@ import "primereact/resources/themes/lara-light-indigo/theme.css";
 import "primereact/resources/primereact.css";
 import "primeflex/primeflex.css";
 import "../../index.css";
-import React, { useState, useEffect, useRef,useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { classNames } from "primereact/utils";
 import { Calendar } from "primereact/calendar";
 import { DataTable } from "primereact/datatable";
+import { FilterMatchMode } from "primereact/api";
 import { Column } from "primereact/column";
+import { MultiSelect } from 'primereact/multiselect';
 import { Toast } from "primereact/toast";
 import { Button } from "primereact/button";
-import { FileUpload } from "primereact/fileupload";
-import { Rating } from "primereact/rating";
 import { Toolbar } from "primereact/toolbar";
-import {  GetAllschedules } from "../Service";
+import { GetAllschedules } from "../Service";
 import { GetAllTrainees } from "../Service";
 import { GetAllInstructors } from "../Service";
-import { RadioButton } from 'primereact/radiobutton';
 import { InputNumber } from "primereact/inputnumber";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
-import { MotionContainer} from '../../components/animate';
+import { MotionContainer } from '../../components/animate';
 import axios from '../../../src/utils/axios';
 import "./DataTableDemo.css";
 
 const Q400Simulator = () => {
   let emptySchedule = {
     id: null,
-    day: "",
-    date: null,
-    from:"",
-    to:"",
-    duration:null,
-    instructor: null,
-    trainee1: null,
-    trainee2: null,
-    trainingtype: null,
+    date: "",
+    from: "",
+    to: "",
+    duration: 0,
+    instructorName: "",
+    traineeName: "",
+    trainingType: "",
     lesson: "",
-    trainingremark: "",
-    simulatordowntime:"",
+    trainingRemark: "",
+    simulatorDownTime: "",
   };
 
-  const [schedules, setSchedules] = useState(null);
+  const [schedules, setSchedules] = useState(emptySchedule);
   const [instructor, setInstructor] = useState(null);
-  const [day, setDay] = useState(null);
-  const [date3, setDate3] = useState(null);
   const [trainee1, setTrainee1] = useState(null);
-  const [trainee2, setTrainee2] = useState(null);
-
+  const [customer2, setCustomer2] = useState(null);
   const [ScheduleDialog, setScheduleDialog] = useState(false);
   const [deleteScheduleDialog, setDeleteScheduleDialog] = useState(false);
   const [deleteSchedulesDialog, setDeleteSchedulesDialog] = useState(false);
   const [schedule, setSchedule] = useState(emptySchedule);
   const [selectedSchedules, setSelectedSchedules] = useState(null);
   const [submitted, setSubmitted] = useState(false);
+  const [filters1, setFilters1] = useState({
+    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    date: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+    instructor: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+    traineeName: { value: null, matchMode: FilterMatchMode.IN },
+    simulatortype: { value: null, matchMode: FilterMatchMode.IN },
+    trainingtype: { value: null, matchMode: FilterMatchMode.IN },
+  });
+  const [globalFilterValue1, setGlobalFilterValue1] = useState("");
+  const [loading1, setLoading1] = useState(true);
   const [globalFilter, setGlobalFilter] = useState(null);
   const toast = useRef(null);
   const dt = useRef(null);
-
-  const days = [
-    { name: "Monday", code: "MON" },
-    { name: "Tuesday", code: "TUE" },
-    { name: "Wednesday", code: "WED" },
-    { name: "Thursday", code: "THU" },
-    { name: "Friday", code: "FRI" },
-    { name: "Saturday", code: "SAT" },
-    { name: "Sunday", code: "SUN" }
-  ];
- 
 
   const trainingtypes = [
     { name: "Initial Type Rating", code: "AU" },
@@ -103,424 +96,391 @@ const Q400Simulator = () => {
     { name: "New Q400 FTD" },
     { name: "New Q400 SIM" },
   ];
-  
-const getSchedules = useCallback(async () => {
-  const data = await GetAllschedules();
-  setSchedules(data)
-},[])
-const getTrainees= useCallback(async () => {
-  const data = await GetAllTrainees();
-  setTrainee1(data)
-  setTrainee2(data)
-},[])
-const getInstructors= useCallback(async () => {
-  const data = await GetAllInstructors();
-  setInstructor(data)
-},[])
-useEffect(() =>  { 
-  getSchedules()
-  getTrainees()
-  getInstructors()
+
+  const getSchedules = useCallback(async () => {
+    const data = await GetAllschedules();
+    setCustomer2(data)
+    setLoading1(false)
+    console.log(data)
+  }, [])
+  const getTrainees = useCallback(async () => {
+    const data = await GetAllTrainees();
+    setTrainee1(data)
+
+  }, [])
+  const getInstructors = useCallback(async () => {
+    const data = await GetAllInstructors();
+    setInstructor(data)
+  }, [])
+  useEffect(() => {
+    getSchedules()
+    getTrainees()
+    getInstructors()
 
 
 
-},[getSchedules,getTrainees,getInstructors]);
-  
-    // const formatCurrency = (value) => {
-    //   return value.toLocaleString("en-US", {
-    //     style: "currency",
-    //     currency: "USD"
-    //   });
-    // };
+  }, [getSchedules, getTrainees, getInstructors]);
 
-    const openNew = () => {
-      setSchedule(emptySchedule);
-      setSubmitted(false);
-      setScheduleDialog(true);
-    };
+  // const formatCurrency = (value) => {
+  //   return value.toLocaleString("en-US", {
+  //     style: "currency",
+  //     currency: "USD"
+  //   });
+  // };
 
-    const hideDialog = () => {
-      setSubmitted(false);
-      setScheduleDialog(false);
-    };
+  const openNew = () => {
+    setSchedule(emptySchedule);
+    setSubmitted(false);
+    setScheduleDialog(true);
+  };
 
-    const hideDeleteScheduleDialog = () => {
-      setDeleteScheduleDialog(false);
-    };
+  const hideDialog = () => {
+    setSubmitted(false);
+    setScheduleDialog(false);
+  };
 
-    const hideDeleteSchedulesDialog = () => {
-      setDeleteSchedulesDialog(false);
-    };
+  const hideDeleteScheduleDialog = () => {
+    setDeleteScheduleDialog(false);
+  };
 
-    const saveSchedule = () => {
-      setSubmitted(true);
-       
-      if (schedule.day?.name.trim()) {
-         let _schedules = { ...schedule };
-         let _schedule = { ...schedule };
-        if (schedule.id) {
-          const index = findIndexById(schedule.id);
+  const hideDeleteSchedulesDialog = () => {
+    setDeleteSchedulesDialog(false);
+  };
 
-           _schedule[index] = _schedule;
-          toast.current.show({
-            severity: "success",
-            summary: "Successful",
-            detail: "Schedule Updated",
-            life: 3000
-          });
-        } else {
-          const accessToken = window.localStorage.getItem('accessToken');
-          console.log(schedule)
-          let data = new FormData();
-          axios({
-            headers:{
-            Authorization:`Bearer ${accessToken}`},
-            url:"/Schedule/api/V1.0/Schedule/Create",
-            method:'Post',
-            body:data
-          })
-          toast.current.show({
-            severity: "success",
-            summary: "Successful",
-            detail: "Schedule Created",
-            life: 3000
-          });
+  const saveSchedule = () => {
+    setSubmitted(true);
+
+    if (schedule.simulatorType?.name.trim()) {
+      let _schedules = { ...schedule };
+      let _schedule = { ...schedule };
+      const accessToken = window.localStorage.getItem('accessToken');
+      if (schedule.id) {
+        // const index = findIndexById(schedule.id);
+        let list = {
+
+          date: schedule.date,
+          from: schedule.from,
+          to: schedule.to,
+          duration: schedule.duration,
+          instructorId: Number(schedule.instructor.instructorId),
+
+          // trainee2:schedule.traineeId
+          simulatortype: schedule.simulatorType.name,
+          trainingtype: schedule.trainingType.name,
+          lesson: schedule.lesson.name,
+          trainingremark: schedule.trainingRemark,
+          simulatordowntime: schedule.simulatorDownTime,
+          // <    traineeId:schedule.trainee1.id>
+          scheduledTraineeRequests: [
+            {
+              "id": 0,
+              "scheduleId": 0,
+              "traineeId": 0,
+            },
+
+          ]
         }
+        console.log(schedule)
+        axios({
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+          method: "post",
+          url: "/Schedule/api/V1.0/Schedule/Update",
+          data: list,
 
-         setSchedules(_schedules);
-        setScheduleDialog(false);
-        setSchedule(emptySchedule);
-      }
-    };
-    // const onInstructorChange = (e) => {
-    //   setInstructor(e.value);
-    // };
-    
-    // const onTrainee1Change = (e) => {
-    //   setTrainee1(e.value);
-    // };
-
-    // const onTrainee2Change = (e) => {
-    //   setTrainee2(e.value);
-    // };
-
-    // const onTrainingTypeChange = (e) => {
-    //   setTrainingType(e.value);
-    // };
-    // const onLessonChange = (e) => {
-    //   setLesson(e.value);
-    // };
-    // const onSimulatorTypeChange = (e) => {
-    //   SetSimulatorType(e.value);
-    // };
-
-    const editSchedule = (schedule) => {
-      setSchedule({ ...schedule });
-      setScheduleDialog(true);
-    };
-
-    const confirmDeleteSchedule = (schedule) => {
-      setSchedule(schedule);
-      setDeleteScheduleDialog(true);
-    };
-
-    const deleteSchedule = () => {
-      let _schedules = schedules.filter((val) => val.id !== schedule.id);
-      setSchedules(_schedules);
-      setDeleteScheduleDialog(false);
-      setSchedule(emptySchedule);
-      toast.current.show({
-        severity: "success",
-        summary: "Successful",
-        detail: "Schedule Deleted",
-        life: 3000
-      });
-    };
-
-    const findIndexById = (id) => {
-      let index = -1;
-      for (let i = 0; i < schedules.length; i++) {
-        if (schedules[i].id === id) {
-          index = i;
-          break;
-        }
-      }
-
-      return index;
-    };
-
-    const createId = () => {
-      let id = "";
-      let chars =
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-      for (let i = 0; i < 5; i++) {
-        id += chars.charAt(Math.floor(Math.random() * chars.length));
-      }
-      return id;
-    };
-
-    const importCSV = (e) => {
-      const file = e.files[0];
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const csv = e.target.result;
-        const data = csv.split("\n");
-
-        // Prepare DataTable
-        const cols = data[0].replace(/['"]+/g, "").split(",");
-        data.shift();
-
-        const importedData = data.map((d) => {
-          d = d.split(",");
-          const processedData = cols.reduce((obj, c, i) => {
-            c =
-              c === "Status"
-                ? "inventoryStatus"
-                : c === "Reviews"
-                  ? "rating"
-                  : c.toLowerCase();
-            obj[c] = d[i].replace(/['"]+/g, "");
-            (c === "price" || c === "rating") && (obj[c] = parseFloat(obj[c]));
-            return obj;
-          }, {});
-
-          processedData["id"] = createId();
-          return processedData;
+        })
+        _schedule[index] = _schedule;
+        toast.current.show({
+          severity: "success",
+          summary: "Successful",
+          detail: "Schedule Updated",
+          life: 3000
         });
+      } else {
+        let list = {
+          date: schedule.date,
+          from: schedule.from,
+          to: schedule.to,
+          duration: schedule.duration,
+          instructorId: Number(schedule.instructor.instructorId),
 
-        const _schedules = [...schedules, ...importedData];
+          // trainee2:schedule.traineeId
+          simulatortype: schedule.simulatorType.name,
+          trainingtype: schedule.trainingType.name,
+          lesson: schedule.lesson.name,
+          trainingremark: schedule.trainingRemark,
+          simulatordowntime: schedule.simulatorDownTime,
+          // <    traineeId:schedule.trainee1.id>
+          scheduledTraineeRequests: [
+            {
+              "id": 0,
+              "scheduleId": 0,
+              "traineeId": 0
+            },
 
-        setSchedule(_schedules);
-      };
+          ]
+        }
+        console.log(schedule)
+        axios({
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+          method: "post",
+          url: "/Schedule/api/V1.0/Schedule/Create",
+          data: list,
 
-      reader.readAsText(file, "UTF-8");
-    };
+        })
+        toast.current.show({
+          severity: "success",
+          summary: "Successful",
+          detail: "Schedule Created",
+          life: 3000
+        });
+      }
 
-    const exportCSV = () => {
-      dt.current.exportCSV();
-    };
-
-    const confirmDeleteSelected = () => {
-      setDeleteSchedulesDialog(true);
-    };
-
-    const deleteSelectedSchedules = () => {
-      let _schedules = schedules.filter((val) => !selectedSchedules.includes(val));
       setSchedules(_schedules);
-      setDeleteSchedulesDialog(false);
-      setSelectedSchedules(null);
-      toast.current.show({
-        severity: "success",
-        summary: "Successful",
-        detail: "schedules Deleted",
-        life: 3000
-      });
-    };
+      setScheduleDialog(false);
+      setSchedule(emptySchedule);
+    }
+  };
+  // const onInstructorChange = (e) => {
+  //   setInstructor(e.value);
+  // };
 
-   const onDayChange = (e, day) => {
+  // const onTrainee1Change = (e) => {
+  //   setTrainee1(e.value);
+  // };
+
+  // const onTrainee2Change = (e) => {
+  //   setTrainee2(e.value);
+  // };
+
+  // const onTrainingTypeChange = (e) => {
+  //   setTrainingType(e.value);
+  // };
+  // const onLessonChange = (e) => {
+  //   setLesson(e.value);
+  // };
+  // const onSimulatorTypeChange = (e) => {
+  //   SetSimulatorType(e.value);
+  // };
+
+  const editSchedule = (schedule) => {
+    setSchedule({ ...schedule });
+    setScheduleDialog(true);
+  };
+
+  const confirmDeleteSchedule = (schedule) => {
+    setSchedule(schedule);
+    setDeleteScheduleDialog(true);
+  };
+
+  const deleteSchedule = () => {
+    let _schedules = schedules.filter((val) => val.id !== schedule.id);
+    setSchedules(_schedules);
+    setDeleteScheduleDialog(false);
+    setSchedule(emptySchedule);
+    toast.current.show({
+      severity: "success",
+      summary: "Successful",
+      detail: "Schedule Deleted",
+      life: 3000
+    });
+  };
+
+  const findIndexById = (id) => {
+    let index = -1;
+    for (let i = 0; i < schedules.length; i++) {
+      if (schedules[i].id === id) {
+        index = i;
+        break;
+      }
+    }
+
+    return index;
+  };
+
+
+
+
+  const exportCSV = () => {
+    dt.current.exportCSV();
+  };
+
+  const confirmDeleteSelected = () => {
+    setDeleteSchedulesDialog(true);
+  };
+
+  const deleteSelectedSchedules = () => {
+    let _schedules = schedules.filter((val) => !selectedSchedules.includes(val));
+    setSchedules(_schedules);
+    setDeleteSchedulesDialog(false);
+    setSelectedSchedules(null);
+    toast.current.show({
+      severity: "success",
+      summary: "Successful",
+      detail: "schedules Deleted",
+      life: 3000
+    });
+  };
+
+
+
+  const onInputChange = (e, date) => {
     const val = (e.target && e.target.value) || "";
     let _schedule = { ...schedule };
-    _schedule[`${day}`] = val;
+    _schedule[`${date}`] = val;
 
     setSchedule(_schedule);
   };
 
-const onInputChange = (e, day) => {
-      const val = (e.target && e.target.value) || "";
-      let _schedule = { ...schedule };
-      _schedule[`${day}`] = val;
-
-      setSchedule(_schedule);
-    };
-  
   const onInputNumberChange = (e, duration) => {
     const val = e.value || 0;
-      let _schedule = { ...schedule };
-      _schedule[`${duration}`] = val;
+    let _schedule = { ...schedule };
+    _schedule[`${duration}`] = val;
 
-      setSchedule(_schedule);
-    };
-    const ondateFromChange = (e, from) => {
-      const val = e.value || 0;
-      let _schedule = { ...schedule };
-      _schedule[`${from}`] = val;
-
-      setSchedule(_schedule);
-    };
-const ondateToChange = (e, to) => {
-      const val = e.value || 0;
-      let _schedule = { ...schedule };
-      _schedule[`${to}`] = val;
-
-      setSchedule(_schedule);
-    };
-      const onInstructorChange = (e, instructor) => {
-      const val = (e.target && e.target.value) || "";
-      let _schedule = { ...schedule };
-      _schedule[`${instructor}`] = val;
-
-      setSchedule(_schedule);
-    };
-      const onTrainee1Change = (e, trainee1) => {
-      const val = (e.target && e.target.value) || "";
-      let _schedule = { ...schedule };
-      _schedule[`${trainee1}`] = val;
-
-      setSchedule(_schedule);
-    };
-    const onTrainee2Change = (e, trainee2) => {
-      const val = (e.target && e.target.value) || "";
-      let _schedule = { ...schedule };
-      _schedule[`${trainee2}`] = val;
-
-      setSchedule(_schedule);
-    };
-    const onSimulatorTypeChange = (e, simulatortype) => {
-      const val = (e.target && e.target.value) || "";
-      let _schedule = { ...schedule };
-      _schedule[`${simulatortype}`] = val;
-
-      setSchedule(_schedule);
-    };
-    const onTrainingTypeChange = (e, trainingtype) => {
-      const val = (e.target && e.target.value) || "";
-      let _schedule = { ...schedule };
-      _schedule[`${trainingtype}`] = val;
-
-      setSchedule(_schedule);
-    };
-    const onLessonChange = (e, lesson) => {
-      const val = (e.target && e.target.value) || "";
-      let _schedule = { ...schedule };
-      _schedule[`${lesson}`] = val;
-
-      setSchedule(_schedule);
-    };
-   
-
-    const leftToolbarTemplate = () => {
-      return (
-        <React.Fragment>
-          <Button
-            label="New"
-            icon="pi pi-plus"
-            className="p-button-success mr-2"
-            onClick={openNew}
-          />
-          <Button
-            label="Delete"
-            icon="pi pi-trash"
-            className="p-button-danger"
-            onClick={confirmDeleteSelected}
-            disabled={!selectedSchedules || !selectedSchedules.length}
-          />
-        </React.Fragment>
-      );
-    };
-
-    const rightToolbarTemplate = () => {
-      return (
-        <React.Fragment>
-          <FileUpload
-            mode="basic"
-            name="demo[]"
-            auto
-            url="https://primefaces.org/primereact/showcase/upload.php"
-            accept=".csv"
-            chooseLabel="Import"
-            className="mr-2 inline-block"
-            onUpload={importCSV}
-          />
-          <Button
-            label="Export"
-            icon="pi pi-upload"
-            className="p-button-help"
-            onClick={exportCSV}
-          />
-        </React.Fragment>
-      );
-    };
-    const actionBodyTemplate = (rowData) => {
-      return (
-        <React.Fragment>
-          <Button
-            icon="pi pi-pencil"
-            className="p-button-rounded p-button-success mr-2"
-            onClick={() => editSchedule(rowData)}
-          />
-          <Button
-            icon="pi pi-trash"
-            className="p-button-rounded p-button-warning"
-            onClick={() => confirmDeleteSchedule(rowData)}
-          />
-        </React.Fragment>
-      );
-    };
-
-    const header = (
-      <div className="table-header">
-        <h5 className="mx-0 my-1">Manage schedules</h5>
+    setSchedule(_schedule);
+  };
+  const onGlobalFilterChange1 = (e) => {
+    const value = e.target.value;
+    let _filters1 = { ...filters1 };
+    _filters1["global"].value = value;
+    setFilters1(_filters1);
+    setGlobalFilterValue1(value);
+  };
+  const renderHeader1 = () => {
+    return (
+      <div className="flex justify-content-between">
+        {/* <Button type="button" icon="pi pi-filter-slash" label="Clear" className="p-button-outlined" onClick={clearFilter1} /> */}
         <span className="p-input-icon-left">
           <i className="pi pi-search" />
           <InputText
-            type="search"
-            onInput={(e) => setGlobalFilter(e.target.value)}
-            placeholder="Search..."
+            value={globalFilterValue1}
+            onChange={onGlobalFilterChange1}
+            placeholder="Keyword Search"
           />
         </span>
       </div>
     );
-    const scheduleDialogFooter = (
-      <React.Fragment>
-        <Button
-          label="Cancel"
-          icon="pi pi-times"
-          className="p-button-text"
-          onClick={hideDialog}
-        />
-        <Button
-          label="Save"
-          icon="pi pi-check"
-          className="p-button-text"
-          onClick={saveSchedule}
-        />
-      </React.Fragment>
-    );
-    const deleteScheduleDialogFooter = (
-      <React.Fragment>
-        <Button
-          label="No"
-          icon="pi pi-times"
-          className="p-button-text"
-          onClick={hideDeleteScheduleDialog}
-        />
-        <Button
-          label="Yes"
-          icon="pi pi-check"
-          className="p-button-text"
-          onClick={deleteSchedule}
-        />
-      </React.Fragment>
-    );
-    const deleteSchedulesDialogFooter = (
-      <React.Fragment>
-        <Button
-          label="No"
-          icon="pi pi-times"
-          className="p-button-text"
-          onClick={hideDeleteSchedulesDialog}
-        />
-        <Button
-          label="Yes"
-          icon="pi pi-check"
-          className="p-button-text"
-          onClick={deleteSelectedSchedules}
-        />
-      </React.Fragment>
-    );
+  };
 
+  const leftToolbarTemplate = () => {
     return (
-     <MotionContainer>
+      <React.Fragment>
+        <Button
+          label="New"
+          icon="pi pi-plus"
+          className="p-button-success mr-2"
+          onClick={openNew}
+        />
+        <Button
+          label="Delete"
+          icon="pi pi-trash"
+          className="p-button-danger"
+          onClick={confirmDeleteSelected}
+          disabled={!selectedSchedules || !selectedSchedules.length}
+        />
+      </React.Fragment>
+    );
+  };
+
+  const rightToolbarTemplate = () => {
+    return (
+      <React.Fragment>
+        <Button
+          label="Export"
+          icon="pi pi-upload"
+          className="p-button-help"
+          onClick={exportCSV}
+        />
+      </React.Fragment>
+    );
+  };
+  const actionBodyTemplate = (rowData) => {
+    return (
+      <React.Fragment>
+        <Button
+          icon="pi pi-pencil"
+          className="p-button-rounded p-button-success mr-2"
+          onClick={() => editSchedule(rowData)}
+        />
+        <Button
+          icon="pi pi-trash"
+          className="p-button-rounded p-button-warning"
+          onClick={() => confirmDeleteSchedule(rowData)}
+        />
+      </React.Fragment>
+    );
+  };
+
+  const header = (
+    <div className="table-header">
+      <h5 className="mx-0 my-1">Manage schedules</h5>
+      <span className="p-input-icon-left">
+        <i className="pi pi-search" />
+        <InputText
+          type="search"
+          onInput={(e) => setGlobalFilter(e.target.value)}
+          placeholder="Search..."
+        />
+      </span>
+    </div>
+  );
+  const scheduleDialogFooter = (
+    <React.Fragment>
+      <Button
+        label="Cancel"
+        icon="pi pi-times"
+        className="p-button-text"
+        onClick={hideDialog}
+      />
+      <Button
+        label="Save"
+        icon="pi pi-check"
+        className="p-button-text"
+        onClick={saveSchedule}
+      />
+    </React.Fragment>
+  );
+  const deleteScheduleDialogFooter = (
+    <React.Fragment>
+      <Button
+        label="No"
+        icon="pi pi-times"
+        className="p-button-text"
+        onClick={hideDeleteScheduleDialog}
+      />
+      <Button
+        label="Yes"
+        icon="pi pi-check"
+        className="p-button-text"
+        onClick={deleteSchedule}
+      />
+    </React.Fragment>
+  );
+  const deleteSchedulesDialogFooter = (
+    <React.Fragment>
+      <Button
+        label="No"
+        icon="pi pi-times"
+        className="p-button-text"
+        onClick={hideDeleteSchedulesDialog}
+      />
+      <Button
+        label="Yes"
+        icon="pi pi-check"
+        className="p-button-text"
+        onClick={deleteSelectedSchedules}
+      />
+    </React.Fragment>
+  );
+  const header1 = renderHeader1();
+
+  return (
+    <MotionContainer>
       <div className="datatable-crud-demo">
         <Toast ref={toast} />
 
@@ -533,11 +493,14 @@ const ondateToChange = (e, to) => {
 
           <DataTable
             ref={dt}
+            value={customer2}
             selection={selectedSchedules}
             onSelectionChange={(e) => setSelectedSchedules(e.value)}
             dataKey="id"
             paginator
+            showGridlines
             rows={10}
+            loading={loading1}
             rowsPerPageOptions={[5, 10, 25]}
             paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
             currentPageReportTemplate="Showing {first} to {last} of {totalRecords} schedule"
@@ -551,20 +514,6 @@ const ondateToChange = (e, to) => {
               exportable={false}
             ></Column>
             <Column
-              field="id"
-              header="Id"
-              sortable
-              style={{ minWidth: "1rem" }}
-            >
-
-            </Column>
-            <Column
-              field="day"
-              header="Day"
-              sortable
-              style={{ minWidth: "8rem" }}
-            ></Column>
-            <Column
               field="date"
               header="Date"
               sortable
@@ -573,50 +522,52 @@ const ondateToChange = (e, to) => {
             <Column
               field="from"
               header="From"
-               sortable
+              sortable
               integeronly
-               style={{ minWidth: "3rem" }}
+              style={{ minWidth: "3rem" }}
             ></Column>
             <Column
               field="to"
               header="To"
-               sortable
+              sortable
               integeronly
-               style={{ minWidth: "3rem" }}
+              style={{ minWidth: "3rem" }}
             ></Column>
             <Column
               field="duration"
               header="Duration"
-               sortable
+              sortable
               integeronly
-               style={{ minWidth: "8rem" }}
+              style={{ minWidth: "8rem" }}
             ></Column>
             <Column
-              field="instructor"
+              field="instructorName"
               header="Instructor"
               sortable
               style={{ minWidth: "8rem" }}
             ></Column>
             <Column
-              field="trainee1"
+              field="scheduledTraineeRes{
+                traineeName
+              }"
               header="Trainee 1"
               sortable
               style={{ minWidth: "10rem" }}
             ></Column>
-            <Column
-              field="trainee2"
+            {/* <Column
+              field="traineeName"
               header="Trainee 2"
               sortable
               style={{ minWidth: "12rem" }}
-            ></Column>
+            ></Column> */}
             <Column
-              field="simulatortype"
+              field="simulatorType"
               header="Simulator Type"
               sortable
               style={{ minWidth: "12rem" }}
             ></Column>
             <Column
-              field="trainingtype"
+              field="trainingType"
               header="Training Type"
               sortable
               style={{ minWidth: "12rem" }}
@@ -628,13 +579,13 @@ const ondateToChange = (e, to) => {
               style={{ minWidth: "12rem" }}
             ></Column>
             <Column
-              field="trainingremark"
+              field="trainingRemark"
               header="Training Remark"
               sortable
               style={{ minWidth: "12rem" }}
             ></Column>
             <Column
-              field="simulatordowntime"
+              field="simulatorDownTime"
               header="Simulator Down Time"
               style={{ minWidth: "3rem" }}
             ></Column>
@@ -657,28 +608,7 @@ const ondateToChange = (e, to) => {
         >
           <div className="formgrid grid">
             <div className="field col">
-              <label htmlFor="name">Day</label>
-              <Dropdown
-                id="day"
-                value={schedule.day}
-                options={days}
-                onChange={(e) => onInputChange(e, "day")}
-                optionLabel="name"
-                filter
-                showClear
-                filterBy="name"
-                placeholder="Select days"
-                required
-                autoFocus
-                 className={classNames({ 'p-invalid': submitted && !schedule.day })}
-              />
-              {submitted && !schedule.day && (
-                <small className="p-error">Day is required.</small>
-              )}
-            </div>
-
-            <div className="field col">
-              <label htmlFor="basic">Date Picker</label>
+              <label htmlFor="date">Date Picker</label>
               <Calendar
                 id="date"
                 value={schedule.date}
@@ -692,16 +622,16 @@ const ondateToChange = (e, to) => {
                 <small className="p-error">Date is required.</small>
               )}
             </div>
-           <div className="field col">
-              <label >From</label>
+            <div className="field col">
+              <label htmlFor="from">From</label>
               <Calendar
-                id="from" 
+                id="from"
                 value={schedule.from}
                 onChange={(e) => onInputChange(e, "from")}
                 timeOnly hourFormat="12"
                 required
                 autoFocus
-                 className={classNames({ 'p-invalid': submitted && !schedule.from })}
+                className={classNames({ 'p-invalid': submitted && !schedule.from })}
               />
               {submitted && !schedule.from && (
                 <small className="p-error">Time From is required.</small>
@@ -709,15 +639,15 @@ const ondateToChange = (e, to) => {
             </div>
             <div className="field col">
               <label>To</label>
-              <Calendar 
-                id="to" 
+              <Calendar
+                id="to"
                 value={schedule.to}
-                onChange={(e) => onInputChange(e,"to")}
+                onChange={(e) => onInputChange(e, "to")}
                 timeOnly hourFormat="12"
                 required
                 autoFocus
-                className={classNames({ 'p-invalid': submitted && !schedule.to})} />
-                {submitted && !schedule.to && (
+                className={classNames({ 'p-invalid': submitted && !schedule.to })} />
+              {submitted && !schedule.to && (
                 <small className="p-error">TimeTo is required.</small>
               )}
             </div>
@@ -726,14 +656,14 @@ const ondateToChange = (e, to) => {
 
           <div className="formgrid grid">
             <div className="field col">
-              <label className="mb-3">Duration</label>
+              <label htmlFor="duration">Duration</label>
               <InputNumber
                 id="duration"
                 value={schedule.duration}
                 onChange={(e) => onInputNumberChange(e, "duration")}
                 required
                 autoFocus
-                 className={classNames({ 'p-invalid': submitted && !schedule.duration })}
+                className={classNames({ 'p-invalid': submitted && !schedule.duration })}
               />
               {submitted && !schedule.duration && (
                 <small className="p-error">duration is required.</small>
@@ -745,14 +675,14 @@ const ondateToChange = (e, to) => {
                 id="instructor"
                 value={schedule.instructor}
                 options={instructor}
-                onChange={(e) => onInstructorChange(e, "instructor")}
+                onChange={(e) => onInputChange(e, "instructor")}
                 optionLabel="firstName"
                 filter
                 showClear
                 filterBy="firstName"
                 placeholder="Select instructors"
                 autoFocus
-                 className={classNames({ 'p-invalid': submitted && !schedule.instructor })}
+                className={classNames({ 'p-invalid': submitted && !schedule.instructor })}
               // va    lueTemplate={selectedCountryTemplate} itemTemplate={countryOptionTemplate}
               />
               {submitted && !schedule.instructor && (
@@ -761,77 +691,62 @@ const ondateToChange = (e, to) => {
             </div>
             <div className="field col">
               <label htmlFor="trainee1">Trainee 1</label>
-              <Dropdown
+              <MultiSelect
                 id="trainee1"
                 value={schedule.trainee1}
                 options={trainee1}
-                onChange={(e) => onTrainee1Change(e, "trainee1")}
+                onChange={(e) => onInputChange(e, "trainee1")}
                 optionLabel="firstName"
                 filter
+                maxSelectedLabels={2}
                 showClear
                 filterBy="firstName"
                 placeholder="Select Trainee1"
-              autoFocus
-                 className={classNames({ 'p-invalid': submitted && !schedule.trainee1 })}
+                autoFocus
+                className={classNames({ 'p-invalid': submitted && !schedule.trainee1 })}
               />
               {submitted && !schedule.trainee1 && (
                 <small className="p-error">Trainee1 is required.</small>
               )}
             </div>
-            <div className="field col">
-              <label htmlFor="trainee2">Trainee 2</label>
-              <Dropdown
-                value={schedule.trainee2}
-                options={trainee2}
-                onChange={(e) => onTrainee2Change(e, "trainee2")}
-                optionLabel="firstName"
-                filter
-                showClear
-                filterBy="firstName"
-                placeholder="Select Trainee2"
-             autoFocus
-                 className={classNames({ 'p-invalid': submitted && !schedule.trainee2})}
-              />
-              {submitted && !schedule.trainee2 && (
-                <small className="p-error">Trainee2 is required.</small>
-              )}
-            </div>
           </div>
           <div className="formgrid grid">
             <div className="field col">
-              <label htmlFor="simulatortype">Simulator Type</label>
+              <label htmlFor="simulatorType">Simulator Type</label>
               <Dropdown
+                id="simulatorType"
                 value={schedule.simulatortype}
                 options={simulatortypes}
-                onChange={(e) => onSimulatorTypeChange(e, "simulatortype")}
+                onChange={(e) => onInputChange(e, "simulatorType")}
                 optionLabel="name"
                 filter
                 showClear
                 filterBy="name"
                 placeholder="Select Simulator Type"
-              autoFocus
-                 className={classNames({ 'p-invalid': submitted && !schedule.simulatortype })}
+                autoFocus
+                className={classNames({ 'p-invalid': submitted && !schedule.simulatorType })}
               />
-              {submitted && !schedule.simulatortype && (
+              {submitted && !schedule.simulatorType && (
                 <small className="p-error">Simulator type is required.</small>
               )}
 
             </div>
             <div className="field col">
-              <label htmlFor="trainingtype">Training Type</label>
+              <label htmlFor="trainingType">Training Type</label>
               <Dropdown
-                value={schedule.trainingtype}
+                id="trainingType"
+                value={schedule.trainingType}
                 options={trainingtypes}
-                onChange={(e) => onTrainingTypeChange(e, "trainingtype")}
+                onChange={(e) => onInputChange(e, "trainingType")}
                 optionLabel="name"
                 filter
                 showClear
                 filterBy="name"
                 placeholder="Select Training Type"
-           autoFocus
-                 className={classNames({ 'p-invalid': submitted && !schedule.trainingtype })}
+                autoFocus
+                className={classNames({ 'p-invalid': submitted && !schedule.trainingType })}
               />
-              {submitted && !schedule.trainingtype && (
+              {submitted && !schedule.trainingType && (
                 <small className="p-error">Training type is required.</small>
               )}
 
@@ -839,37 +754,44 @@ const ondateToChange = (e, to) => {
             <div className="field col">
               <label htmlFor="lesson">Lesson</label>
               <Dropdown
+                id="lesson"
                 value={schedule.lesson}
                 options={lessons}
-                onChange={(e) => onLessonChange(e, "lesson")}
+                onChange={(e) => onInputChange(e, "lesson")}
                 optionLabel="name"
                 filter
                 showClear
                 filterBy="name"
                 placeholder="Select Lesson"
-              autoFocus
-                 className={classNames({ 'p-invalid': submitted && !schedule.lesson})}
+                autoFocus
+                className={classNames({ 'p-invalid': submitted && !schedule.lesson })}
               />
               {submitted && !schedule.lesson && (
                 <small className="p-error">Lesson is required.</small>
               )}
             </div>
           </div>
-          <div className="field col">
-            <label htmlFor="trainingremark">Training Remark</label>
-            <InputText
-              id="trainingremark"
-              value={schedule.trainingremark}
-              onChange={(e) => onInputChange(e, "trainingremark")}
-            />
-          </div>
-           <div className="field col">
-            <label htmlFor="simulatordowntime">Training Remark</label>
-            <InputText
-              id="simulatordowntime"
-              value={schedule.trainingremark}
-              onChange={(e) => onInputChange(e, "simulatordowntime")}
-            />
+          <div className="form grid">
+            <div className="field col">
+              <label htmlFor="trainingRemark">Training Remark</label>
+              <InputText
+                id="trainingRemark"
+                value={schedule.trainingRemark}
+                onChange={(e) => onInputChange(e, "trainingRemark")}
+                autoFocus
+                className={classNames({ 'p-invalid': submitted && !schedule.trainingRemark })}
+              />
+            </div>
+            <div className="field col">
+              <label htmlFor="simulatorDownTime">Simulator Down Time</label>
+              <InputText
+                id="simulatorDownTime"
+                value={schedule.simulatorDownTime}
+                onChange={(e) => onInputChange(e, "simulatorDownTime")}
+                autoFocus
+                className={classNames({ 'p-invalid': submitted && !schedule.simulatorDownTime })}
+              />
+            </div>
           </div>
         </Dialog>
 
@@ -888,7 +810,7 @@ const ondateToChange = (e, to) => {
             />
             {schedule && (
               <span>
-                Are you sure you want to delete <b>{schedule.day}</b>?
+                Are you sure you want to delete <b>{schedule.date}</b>?
               </span>
             )}
           </div>
@@ -913,7 +835,7 @@ const ondateToChange = (e, to) => {
           </div>
         </Dialog>
       </div>
-      </MotionContainer>
-    );
-  };
+    </MotionContainer>
+  );
+};
 export default Q400Simulator;

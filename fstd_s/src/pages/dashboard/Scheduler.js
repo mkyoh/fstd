@@ -30,10 +30,22 @@ const Scheduler = () => {
 
   const [schedules, setSchedules] = useState(null);
   const [selectedSchedules, setSelectedSchedules] = useState(null);
+  const [customer, setCustomer] = useState(null);
+  const [loading1, setLoading1] = useState(true);
   const [globalFilter, setGlobalFilter] = useState(null);
   const toast = useRef(null);
   const dt = useRef(null);
 
+  const getSchedules = useCallback(async () => {
+    const data = await GetAllschedules();
+    setCustomer(data)
+    setLoading1(false)
+    console.log(data)
+  }, [])
+  useEffect(() => {
+    getSchedules()
+
+  }, [getSchedules]);
 
     const exportCSV = () => {
       dt.current.exportCSV();
@@ -94,9 +106,12 @@ const Scheduler = () => {
 
           <DataTable
             ref={dt}
+            value={customer}
             selection={selectedSchedules}
             onSelectionChange={(e) => setSelectedSchedules(e.value)}
             dataKey="id"
+            showGridlines
+            loading1
             paginator
             rows={10}
             rowsPerPageOptions={[5, 10, 25]}
@@ -110,20 +125,6 @@ const Scheduler = () => {
               selectionMode="multiple"
               headerStyle={{ width: "3rem" }}
               exportable={false}
-            ></Column>
-            <Column
-              field="id"
-              header="Id"
-              sortable
-              style={{ minWidth: "1rem" }}
-            >
-
-            </Column>
-            <Column
-              field="day"
-              header="Day"
-              sortable
-              style={{ minWidth: "8rem" }}
             ></Column>
             <Column
               field="date"
@@ -146,38 +147,25 @@ const Scheduler = () => {
                style={{ minWidth: "3rem" }}
             ></Column>
             <Column
-              id="duration"
-              header="Duration"
-               sortable
-              integeronly
-               style={{ minWidth: "8rem" }}
-            ></Column>
-            <Column
-              field="instructor"
+              field="instructorName"
               header="Instructor"
               sortable
               style={{ minWidth: "8rem" }}
             ></Column>
             <Column
-              field="trainee1"
+              field="traineeName"
               header="Trainee 1"
               sortable
               style={{ minWidth: "10rem" }}
             ></Column>
             <Column
-              field="trainee2"
-              header="Trainee 2"
-              sortable
-              style={{ minWidth: "12rem" }}
-            ></Column>
-            <Column
-              field="simulatortype"
+              field="simulatorType"
               header="Simulator Type"
               sortable
               style={{ minWidth: "12rem" }}
             ></Column>
             <Column
-              field="trainingtype"
+              field="trainingType"
               header="Training Type"
               sortable
               style={{ minWidth: "12rem" }}
@@ -189,7 +177,13 @@ const Scheduler = () => {
               style={{ minWidth: "12rem" }}
             ></Column>
             <Column
-              field="trainingremark"
+              field="trainingRemark"
+              header="Training Remark"
+              sortable
+              style={{ minWidth: "12rem" }}
+            ></Column>
+            <Column
+              field="simulatorDownTime"
               header="Training Remark"
               sortable
               style={{ minWidth: "12rem" }}

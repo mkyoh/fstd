@@ -3,8 +3,8 @@
     margin-left: auto;
 }
 .datatable-filter-demo .p-progressbar {
-    height: 0.5rem;
-    background-color: #d8dadc;
+    height: 0.2rem;
+    background-color: #a7adb4;
 }
 .datatable-filter-demo .p-progressbar .p-progressbar-value {
     background-color: #607d8b;

@@ -22,7 +22,6 @@ export {
 async function GetAllInstructors()
 {
    const accessToken = window.localStorage.getItem('accessToken');
-   console.log(accessToken)
   const response = await axios.get('/MasterData/api/V1.0/Instructor/GetAll',accessToken) 
   return await response.data.instructorsRes;
 }

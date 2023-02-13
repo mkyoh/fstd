@@ -151,7 +151,7 @@ const Q400Simulator = () => {
     setSubmitted(true);
 
     if (schedule.simulatorType?.name.trim()) {
-      let _schedules = { ...schedule };
+      let _schedules = { ...schedules };
       let _schedule = { ...schedule };
       const accessToken = window.localStorage.getItem('accessToken');
       if (schedule.id) {
@@ -175,7 +175,7 @@ const Q400Simulator = () => {
             {
               "id": 0,
               "scheduleId": 0,
-              "traineeId": 0,
+              "traineeId": 1,
             },
 
           ]
@@ -715,7 +715,7 @@ const Q400Simulator = () => {
               <label htmlFor="simulatorType">Simulator Type</label>
               <Dropdown
                 id="simulatorType"
-                value={schedule.simulatortype}
+                value={schedule.simulatorType}
                 options={simulatortypes}
                 onChange={(e) => onInputChange(e, "simulatorType")}
                 optionLabel="name"

@@ -4,11 +4,13 @@ import simulator2 from "../../assets/image/simulator2.jpg";
 import EAAschool from "../../assets/image/EAAschool.gif";
 import Simulatortraining from "../../assets/image/Simulatortraining.jpg";
 import Trainees from "../../assets/image/Trainees.jpg";
+import aircraft3 from "../../assets/image/aircraft3.jpeg"
 export default [
   {
     description: "EAA school",
     urls:EAAschool,
   },
+  
   {
     // title: "Second Slide",
     // description: "This is the second slider Image of our carousel",
@@ -18,6 +20,10 @@ export default [
     // title: "Third Slide",
     // description: "This is the second slider Image of our carousel",
     urls: A350,
+  },
+  {
+    
+    urls: aircraft3,
   },
   
   {

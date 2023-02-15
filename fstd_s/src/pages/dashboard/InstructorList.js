@@ -384,11 +384,6 @@ const InstructorList = () => {
             exportable={false}
           ></Column>
           <Column
-          
-             header= 'Id'
-             field="id"
-          />
-          <Column
             field="firstName"
             header="First Name"
             style={{ minWidth: "12rem" }}

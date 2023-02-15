@@ -42,7 +42,7 @@ export default function NavbarAccount({ isCollapse }) {
         }}
       >
         {/* <MyAvatar /> */}
-        <img src='/favicon/Aircraft.jpg' alt='logo'/>
+        <img src='/favicon/logoo.png' alt='logo'/>
 
         <Box
           sx={{

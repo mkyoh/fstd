@@ -31,8 +31,15 @@ const Q400Simulator = () => {
     from: "",
     to: "",
     duration: 0,
-    instructorName: "",
-    traineeName: "",
+    instructor: "Id",
+    scheduledTraineeRequests: [
+      {
+        id: "",
+        scheduleId: "",
+        traineeId: "",
+
+      }
+    ],
     trainingType: "",
     lesson: "",
     trainingRemark: "",
@@ -99,8 +106,14 @@ const Q400Simulator = () => {
 
   const getSchedules = useCallback(async () => {
     const data = await GetAllschedules();
-    setCustomer2(data)
+    data.map((row, i) => {
+      row.scheduledTraineeRes = row.scheduledTraineeRes.map((val) => {
+        return val.traineeName
+      }).join(",")
+    })
+
     setLoading1(false)
+    setCustomer2(data)
     console.log(data)
   }, [])
   const getTrainees = useCallback(async () => {
@@ -147,13 +160,15 @@ const Q400Simulator = () => {
     setDeleteSchedulesDialog(false);
   };
 
+
   const saveSchedule = () => {
     setSubmitted(true);
-
+    // console.log(schedule)
     if (schedule.simulatorType?.name.trim()) {
       let _schedules = { ...schedules };
       let _schedule = { ...schedule };
       const accessToken = window.localStorage.getItem('accessToken');
+
       if (schedule.id) {
         // const index = findIndexById(schedule.id);
         let list = {
@@ -163,24 +178,21 @@ const Q400Simulator = () => {
           to: schedule.to,
           duration: schedule.duration,
           instructorId: Number(schedule.instructor.instructorId),
-
-          // trainee2:schedule.traineeId
           simulatortype: schedule.simulatorType.name,
           trainingtype: schedule.trainingType.name,
           lesson: schedule.lesson.name,
           trainingremark: schedule.trainingRemark,
           simulatordowntime: schedule.simulatorDownTime,
           // <    traineeId:schedule.trainee1.id>
-          scheduledTraineeRequests: [
-            {
-              "id": 0,
-              "scheduleId": 0,
-              "traineeId": 1,
-            },
+          scheduledTraineeRequests:
+          {
+            id: schedule.id,
+            scheduleId: schedule.scheduleId,
+            traineeId: schedule.traineeId
+          },
 
-          ]
         }
-        console.log(schedule)
+
         axios({
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -205,24 +217,29 @@ const Q400Simulator = () => {
           to: schedule.to,
           duration: schedule.duration,
           instructorId: Number(schedule.instructor.instructorId),
-
           // trainee2:schedule.traineeId
           simulatortype: schedule.simulatorType.name,
           trainingtype: schedule.trainingType.name,
           lesson: schedule.lesson.name,
           trainingremark: schedule.trainingRemark,
           simulatordowntime: schedule.simulatorDownTime,
-          // <    traineeId:schedule.trainee1.id>
-          scheduledTraineeRequests: [
-            {
-              "id": 0,
-              "scheduleId": 0,
-              "traineeId": 0
-            },
-
-          ]
+          scheduledTraineeRequests: schedule.scheduledTraineeRes
+                                     
+            [
+              {
+                "id": 0,
+                "scheduleId": 0,
+                "traineeId": 4
+              },
+               {
+                "id": 0,
+                "scheduleId": 0,
+                "traineeId":5
+              }
+            ]
+          
         }
-        console.log(schedule)
+        console.log(list)
         axios({
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -547,9 +564,7 @@ const Q400Simulator = () => {
               style={{ minWidth: "8rem" }}
             ></Column>
             <Column
-              field="scheduledTraineeRes{
-                traineeName
-              }"
+              field="scheduledTraineeRes"
               header="Trainee 1"
               sortable
               style={{ minWidth: "10rem" }}
@@ -608,7 +623,7 @@ const Q400Simulator = () => {
         >
           <div className="formgrid grid">
             <div className="field col">
-              <label htmlFor="date">Date Picker</label>
+              <label htmlFor="date"><h4>Date Picker</h4></label>
               <Calendar
                 id="date"
                 value={schedule.date}
@@ -623,7 +638,7 @@ const Q400Simulator = () => {
               )}
             </div>
             <div className="field col">
-              <label htmlFor="from">From</label>
+              <label htmlFor="from"><h4>From</h4></label>
               <Calendar
                 id="from"
                 value={schedule.from}
@@ -638,7 +653,7 @@ const Q400Simulator = () => {
               )}
             </div>
             <div className="field col">
-              <label>To</label>
+              <label htmlFor="to"><h4>To</h4></label>
               <Calendar
                 id="to"
                 value={schedule.to}
@@ -656,7 +671,7 @@ const Q400Simulator = () => {
 
           <div className="formgrid grid">
             <div className="field col">
-              <label htmlFor="duration">Duration</label>
+              <label htmlFor="duration"><h4>Duration</h4></label>
               <InputNumber
                 id="duration"
                 value={schedule.duration}
@@ -670,7 +685,7 @@ const Q400Simulator = () => {
               )}
             </div>
             <div className="field col">
-              <label htmlFor="instructor">Instructor</label>
+              <label htmlFor="instructor"><h4>Instructor</h4></label>
               <Dropdown
                 id="instructor"
                 value={schedule.instructor}
@@ -690,12 +705,12 @@ const Q400Simulator = () => {
               )}
             </div>
             <div className="field col">
-              <label htmlFor="trainee1">Trainee 1</label>
+              <label htmlFor="trainee1"><h4>Add Trainees</h4></label>
               <MultiSelect
-                id="trainee1"
-                value={schedule.trainee1}
+                id="scheduledTraineeRes"
+                value={schedule.scheduledTraineeRes}
                 options={trainee1}
-                onChange={(e) => onInputChange(e, "trainee1")}
+                onChange={(e) => onInputChange(e, "scheduledTraineeRes")}
                 optionLabel="firstName"
                 filter
                 maxSelectedLabels={2}
@@ -703,16 +718,16 @@ const Q400Simulator = () => {
                 filterBy="firstName"
                 placeholder="Select Trainee1"
                 autoFocus
-                className={classNames({ 'p-invalid': submitted && !schedule.trainee1 })}
+                className={classNames({ 'p-invalid': submitted && !schedule.scheduledTraineeRes })}
               />
-              {submitted && !schedule.trainee1 && (
+              {submitted && !schedule.scheduledTraineeRes && (
                 <small className="p-error">Trainee1 is required.</small>
               )}
             </div>
           </div>
           <div className="formgrid grid">
             <div className="field col">
-              <label htmlFor="simulatorType">Simulator Type</label>
+              <label htmlFor="simulatorType"><h4>Simulator Type</h4></label>
               <Dropdown
                 id="simulatorType"
                 value={schedule.simulatorType}
@@ -732,7 +747,7 @@ const Q400Simulator = () => {
 
             </div>
             <div className="field col">
-              <label htmlFor="trainingType">Training Type</label>
+              <label htmlFor="trainingType"><h4>Training Type</h4></label>
               <Dropdown
                 id="trainingType"
                 value={schedule.trainingType}
@@ -752,7 +767,7 @@ const Q400Simulator = () => {
 
             </div>
             <div className="field col">
-              <label htmlFor="lesson">Lesson</label>
+              <label htmlFor="lesson"><h4>Lesson</h4></label>
               <Dropdown
                 id="lesson"
                 value={schedule.lesson}
@@ -773,7 +788,7 @@ const Q400Simulator = () => {
           </div>
           <div className="form grid">
             <div className="field col">
-              <label htmlFor="trainingRemark">Training Remark</label>
+              <label htmlFor="trainingRemark"><h4>Training Remark</h4></label>
               <InputText
                 id="trainingRemark"
                 value={schedule.trainingRemark}
@@ -783,7 +798,7 @@ const Q400Simulator = () => {
               />
             </div>
             <div className="field col">
-              <label htmlFor="simulatorDownTime">Simulator Down Time</label>
+              <label htmlFor="simulatorDownTime"><h4>Simulator Down Time</h4></label>
               <InputText
                 id="simulatorDownTime"
                 value={schedule.simulatorDownTime}

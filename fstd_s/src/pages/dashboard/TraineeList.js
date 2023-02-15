@@ -112,7 +112,7 @@ const TraineeList = () => {
         toast.current.show({
           severity: "success",
           summary: "Successful",
-          detail: "Schedule Updated",
+          detail: "Trainee Updated",
           life: 3000
         });
       } else {

@@ -86,7 +86,7 @@ export default function AccountPopover() {
           }),
         }}
       >
-        <img src='/favicon/Logo2.png' alt='logo'/>
+        <img src='/favicon/Logo3.png' alt='logo'/>
       </IconButtonAnimate>
 
       <MenuPopover

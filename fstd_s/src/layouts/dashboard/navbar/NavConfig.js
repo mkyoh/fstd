@@ -1,5 +1,7 @@
 // routes
 import { PATH_DASHBOARD } from '../../../routes/paths';
+import Label from '../../../components/Label';
+import PersonIcon from '@mui/icons-material/Person';
 // components
 import SvgIconStyle from '../../../components/SvgIconStyle';
 
@@ -24,13 +26,16 @@ const ICONS = {
 const navConfig = [
   
 {
+  
      subheader: 'Account management',
+    
      items: [
        // USER
       {
+        
            title: 'User',
           //  path: PATH_DASHBOARD.user.root,
-           icon: ICONS.user,
+           ICONS: getIcon('ic_user'),
            children: [
             { title: 'Role', path: PATH_DASHBOARD.traineelist },
             { title: 'Privileges', path: PATH_DASHBOARD.traineelist },
@@ -38,7 +43,10 @@ const navConfig = [
          },
         ],
       },
+      // <svg data-testid="PersonIcon"></svg>,
+
   {
+    
     subheader: 'Master Data', 
     items: [
       {

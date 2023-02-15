@@ -45,8 +45,8 @@ const RootStyle = styled('div')(({ theme }) => ({
 export default function MainFooter() {
   return (
     <RootStyle>
-      <Divider />
-      <Container sx={{ pt: 10, bgcolor: 'rgb(238, 232, 231)'}} >
+      
+      <Container sx={{ pt: 10, bgcolor: 'rgb(189, 197, 189)'}} >
         <Grid
           container
           justifyContent={{ xs: 'center', md: 'space-between' }}

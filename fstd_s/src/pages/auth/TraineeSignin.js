@@ -29,7 +29,7 @@ const ContentStyle = styled('div')(({ theme }) => ({
 
 
 
-export default function Login() {
+export default function TraineeLogin() {
 
 
   const smUp = useResponsive('up', 'sm');
@@ -44,7 +44,7 @@ export default function Login() {
           <ContentStyle>
             <Stack direction="row" alignItems="center" sx={{ mb: 5 }}>
               <Box sx={{ flexGrow: 1 }}>
-                <img src='/favicon/Aircraft.jpg' alt='logo'/>
+                <img src='/favicon/logoo.png' alt='logo'/>
                 <Typography variant="h4" gutterBottom align='center' >
                 Trainee? Signin to SCMS
                 </Typography>

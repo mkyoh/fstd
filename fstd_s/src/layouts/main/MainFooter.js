@@ -46,7 +46,7 @@ export default function MainFooter() {
   return (
     <RootStyle>
       
-      <Container sx={{ pt: 10, bgcolor: 'rgb(189, 197, 189)'}} >
+      <Container sx={{ pt: 10, bgcolor: 'white'}} >
         <Grid
           container
           justifyContent={{ xs: 'center', md: 'space-between' }}

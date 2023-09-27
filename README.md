@@ -1,5 +1,5 @@
 # fstd
-### ✨ [Live Demo](https://todo-list-app-peach.vercel.app/)
+### ✨ [Live Demo]
 
 ## Overview
 
